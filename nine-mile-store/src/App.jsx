@@ -1,9 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './index.css';
-
-function Home() {
-  return <h1 className="text-3xl font-bold underline text-red-500">Home Page</h1>;
-}
+import Home from './pages/Home';
 
 function App() {
   return (
