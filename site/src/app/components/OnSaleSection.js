@@ -46,7 +46,7 @@ export default function OnSaleSection() {
     <section id="on-sale" className="py-12 bg-background-alternate">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-2 text-black">ON SALE</h2>
-        <p className="text-center text-xl mb-8 text-black">THIS WEEK'S SPECIALS</p>
+        <p className="text-center text-xl mb-8 text-black">THIS WEEK&apos;S SPECIALS</p>
         
         {/* Sale Items */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">

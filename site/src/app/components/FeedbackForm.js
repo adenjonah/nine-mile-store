@@ -73,7 +73,7 @@ export default function FeedbackForm() {
             <div className="bg-background-light p-8 border border-primary/10 rounded-sm">
               <h2 className="text-3xl font-serif text-center mb-2 text-text-primary">We Want Your Feedback!</h2>
               <p className="text-center mb-8 text-text-secondary">
-                Help us understand what products or services you'd like to see at Nine Mile Feed & Hardware
+                Help us understand what products or services you&apos;d like to see at Nine Mile Feed & Hardware
               </p>
               
               {error && (
