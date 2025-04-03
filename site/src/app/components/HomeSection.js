@@ -42,7 +42,10 @@ export default function HomeSection() {
       } catch (error) {
         console.error('Error fetching images:', error);
       } finally {
-        setIsLoading(false);
+        // Add a slight delay to ensure the loading state is visible
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
       }
     }
     
