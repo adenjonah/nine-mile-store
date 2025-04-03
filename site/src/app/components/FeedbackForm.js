@@ -51,7 +51,7 @@ export default function FeedbackForm() {
   };
   
   return (
-    <section id="feedback" className="py-16 bg-background-alternate">
+    <section id="contact" className="py-12 bg-background-alternate">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
           {isSubmitted ? (

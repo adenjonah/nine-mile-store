@@ -1,21 +1,21 @@
-import Header from './components/Header';
+import Navbar from './components/Navbar';
 import HomeSection from './components/HomeSection';
-import OnSaleSection from './components/OnSaleSection';
 import ServicesSection from './components/ServicesSection';
+import OnSaleSection from './components/OnSaleSection';
+import AboutSection from './components/AboutSection';
 import FeedbackForm from './components/FeedbackForm';
-import Footer from './components/Footer';
+import FooterSection from './components/FooterSection';
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-grow">
-        <HomeSection />
-        <OnSaleSection />
-        <ServicesSection />
-        <FeedbackForm />
-      </main>
-      <Footer />
-    </div>
+    <>
+      <Navbar />
+      <HomeSection />
+      <ServicesSection />
+      <OnSaleSection />
+      <AboutSection />
+      <FeedbackForm />
+      <FooterSection />
+    </>
   );
 }

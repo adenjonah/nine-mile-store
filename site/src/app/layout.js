@@ -7,8 +7,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Nine Mile Feed & Hardware | Under New Ownership",
-  description: "Nine Mile Feed & Hardware in Nine Mile Falls, WA. Landscaping services, feed delivery, nursery services, and more. Under new ownership and soon new direction!",
+  title: "Nine Mile Hardware | Family-Owned Hardware Store",
+  description: "Nine Mile Hardware in Nine Mile Falls, WA. Tools, landscaping services, home improvement, paint, and more. Family-owned hardware store serving the local community.",
 };
 
 export default function RootLayout({ children }) {
