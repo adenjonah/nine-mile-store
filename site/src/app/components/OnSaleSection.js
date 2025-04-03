@@ -86,7 +86,7 @@ export default function OnSaleSection() {
     }
     
     fetchData();
-  }, []);
+  }, [fallbackSaleItems, fallbackCloseoutItems]);
   
   return (
     <section id="on-sale" className="py-12 bg-background-alternate">

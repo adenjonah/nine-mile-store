@@ -167,7 +167,7 @@ export default function AboutSection() {
                 {storeInfo.communityText}
               </p>
               <p className="text-black mb-4">
-                Our team members are active in the Nine Mile Falls community, and we're proud to support local schools, youth sports teams, and community initiatives.
+                Our team members are active in the Nine Mile Falls community, and we&apos;re proud to support local schools, youth sports teams, and community initiatives.
               </p>
               <p className="text-black">
                 Stop by the store to learn more about our upcoming community events and how you can get involved!

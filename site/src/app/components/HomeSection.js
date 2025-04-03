@@ -81,7 +81,7 @@ export default function HomeSection() {
                 Our knowledgeable staff is always ready to help you find exactly what you need for your project, big or small. We believe in being a helpful neighbor and an integral part of our local community.
               </p>
               <p className="text-black">
-                Whether you're a professional contractor or a weekend DIY enthusiast, you'll find everything you need at Nine Mile Hardware. Stop by today and experience the difference of shopping at a local, family-owned hardware store.
+                Whether you&apos;re a professional contractor or a weekend DIY enthusiast, you&apos;ll find everything you need at Nine Mile Hardware. Stop by today and experience the difference of shopping at a local, family-owned hardware store.
               </p>
             </div>
             

@@ -88,7 +88,7 @@ export default function ServicesSection() {
     }
     
     fetchData();
-  }, []);
+  }, [fallbackServices, fallbackLandscapingServices]);
   
   return (
     <section id="services" className="py-12 bg-background">
