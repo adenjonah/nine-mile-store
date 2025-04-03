@@ -31,19 +31,9 @@ export default function HomeSection() {
               We are a family-owned business committed to providing quality products and exceptional service to our customers.
             </p>
             
-            <div className="flex flex-col md:flex-row md:items-center gap-6">
-              <div className="relative w-full md:w-1/3 h-60 rounded-md overflow-hidden">
-                <Image 
-                  src="/images/community/owner-portrait.png"
-                  alt="Store Owner"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <p className="text-xl font-semibold text-black bg-primary-light/10 p-4 rounded-lg border-l-4 border-primary md:w-2/3">
-                Under new ownership with a commitment to expanding our products and services to better serve our community!
-              </p>
-            </div>
+            <p className="text-xl font-semibold text-black bg-primary-light/10 p-4 rounded-lg border-l-4 border-primary">
+              Under new ownership with a commitment to expanding our products and services to better serve our community!
+            </p>
           </div>
         </div>
         
