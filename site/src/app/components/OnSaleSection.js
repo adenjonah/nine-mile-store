@@ -46,9 +46,16 @@ export default function OnSaleSection() {
   ];
   
   useEffect(() => {
+    let isMounted = true;
+    
     async function fetchData() {
       try {
-        setIsLoading(true);
+        if (!isMounted) return;
+        
+        // Don't set loading if we already have data
+        if (saleItems.length === 0) {
+          setIsLoading(true);
+        }
         
         // Fetch products on sale
         const products = await client.fetch(`
@@ -70,25 +77,48 @@ export default function OnSaleSection() {
           }
         `);
         
-        // If we have products from Sanity, use them, otherwise use fallback data
-        setSaleItems(products.length > 0 ? products : fallbackSaleItems);
-        setCloseoutItems(closeouts.length > 0 
-          ? closeouts.map(item => item.title) 
-          : fallbackCloseoutItems);
+        // Only update state if component is still mounted
+        if (isMounted) {
+          // If we have products from Sanity, use them, otherwise keep using fallback data
+          if (products && products.length > 0) {
+            setSaleItems(products);
+          }
+          
+          // If we have closeout items from Sanity, use them, otherwise keep using fallback data
+          if (closeouts && closeouts.length > 0) {
+            setCloseoutItems(closeouts.map(item => item.title));
+          }
+          
+          // Set loading to false after a minimum delay of 1000ms to prevent flickering
+          setTimeout(() => {
+            if (isMounted) {
+              setIsLoading(false);
+            }
+          }, 1000);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
         // Use fallback data if there's an error
-        setSaleItems(fallbackSaleItems);
-        setCloseoutItems(fallbackCloseoutItems);
-      } finally {
-        // Add a slight delay to ensure the loading state is visible
-        setTimeout(() => {
+        if (isMounted) {
+          setSaleItems(fallbackSaleItems);
+          setCloseoutItems(fallbackCloseoutItems);
           setIsLoading(false);
-        }, 500);
+        }
       }
     }
     
+    // Set initial data to fallback immediately to prevent flash
+    if (saleItems.length === 0) {
+      setSaleItems(fallbackSaleItems);
+      setCloseoutItems(fallbackCloseoutItems);
+    }
+    
     fetchData();
+    
+    // Cleanup function to prevent updates if component unmounts
+    return () => {
+      isMounted = false;
+    };
   }, [fallbackSaleItems, fallbackCloseoutItems]);
   
   return (
@@ -100,8 +130,36 @@ export default function OnSaleSection() {
         {/* Sale Items */}
         {isLoading ? (
           <div className="flex justify-center items-center py-12">
-            <div className="animate-pulse text-center">
-              <p className="text-black">Loading products...</p>
+            <div className="w-full max-w-3xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                {[1, 2, 3].map((item) => (
+                  <div 
+                    key={item}
+                    className="bg-white border border-gray-200 rounded-lg p-6 shadow-theme-md"
+                  >
+                    <div className="w-full h-48 bg-gray-200 rounded-md mb-4 animate-pulse"></div>
+                    <div className="h-6 bg-gray-200 rounded w-3/4 mb-2 animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 rounded w-full mb-2 animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 rounded w-5/6 mb-4 animate-pulse"></div>
+                    <div className="flex items-center mt-auto">
+                      <div className="h-4 bg-gray-200 rounded w-16 mr-3 animate-pulse"></div>
+                      <div className="h-6 bg-primary/30 rounded-full w-20 animate-pulse"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md animate-pulse">
+                <div className="h-7 bg-gray-200 rounded w-1/4 mb-6"></div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="h-64 bg-gray-200 rounded-md"></div>
+                  <div className="space-y-4">
+                    {[1, 2, 3, 4].map((item) => (
+                      <div key={item} className="h-12 bg-gray-200 rounded-lg"></div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         ) : (

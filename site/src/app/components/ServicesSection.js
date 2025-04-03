@@ -48,9 +48,16 @@ export default function ServicesSection() {
   ];
   
   useEffect(() => {
+    let isMounted = true;
+    
     async function fetchData() {
       try {
-        setIsLoading(true);
+        if (!isMounted) return;
+        
+        // Don't set loading if we already have data
+        if (services.length === 0) {
+          setIsLoading(true);
+        }
         
         // Fetch services
         const servicesData = await client.fetch(`
@@ -72,25 +79,48 @@ export default function ServicesSection() {
           } | order(highlighted desc)
         `);
         
-        // If we have services from Sanity, use them, otherwise use fallback data
-        setServices(servicesData.length > 0 ? servicesData : fallbackServices);
-        setLandscapingServices(landscapingData.length > 0 
-          ? landscapingData.map(item => item.title) 
-          : fallbackLandscapingServices);
+        // Only update state if component is still mounted
+        if (isMounted) {
+          // If we have services from Sanity, use them, otherwise keep using fallback data
+          if (servicesData && servicesData.length > 0) {
+            setServices(servicesData);
+          }
+          
+          // If we have landscaping services from Sanity, use them, otherwise keep using fallback data
+          if (landscapingData && landscapingData.length > 0) {
+            setLandscapingServices(landscapingData.map(item => item.title));
+          }
+          
+          // Set loading to false after a minimum delay of 1000ms to prevent flickering
+          setTimeout(() => {
+            if (isMounted) {
+              setIsLoading(false);
+            }
+          }, 1000);
+        }
       } catch (error) {
         console.error('Error fetching services:', error);
         // Use fallback data if there's an error
-        setServices(fallbackServices);
-        setLandscapingServices(fallbackLandscapingServices);
-      } finally {
-        // Add a slight delay to ensure the loading state is visible
-        setTimeout(() => {
+        if (isMounted) {
+          setServices(fallbackServices);
+          setLandscapingServices(fallbackLandscapingServices);
           setIsLoading(false);
-        }, 500);
+        }
       }
     }
     
+    // Set initial data to fallback immediately to prevent flash
+    if (services.length === 0) {
+      setServices(fallbackServices);
+      setLandscapingServices(fallbackLandscapingServices);
+    }
+    
     fetchData();
+    
+    // Cleanup function to prevent updates if component unmounts
+    return () => {
+      isMounted = false;
+    };
   }, [fallbackServices, fallbackLandscapingServices]);
   
   return (
@@ -101,9 +131,30 @@ export default function ServicesSection() {
         
         {/* Core Services */}
         {isLoading ? (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-pulse text-center">
-              <p className="text-black">Loading services...</p>
+          <div className="w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+              {[1, 2, 3, 4].map((item) => (
+                <div 
+                  key={item}
+                  className="bg-white border border-gray-200 rounded-lg p-6 shadow-theme-md"
+                >
+                  <div className="w-full h-48 bg-gray-200 rounded-md mb-4 animate-pulse"></div>
+                  <div className="h-6 bg-gray-200 rounded w-3/4 mb-2 animate-pulse"></div>
+                  <div className="h-4 bg-gray-200 rounded w-full mb-2 animate-pulse"></div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md animate-pulse">
+              <div className="h-7 bg-gray-200 rounded w-1/4 mb-6"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="h-64 bg-gray-200 rounded-md"></div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {[1, 2, 3, 4, 5, 6].map((item) => (
+                    <div key={item} className="h-12 bg-gray-200 rounded-lg"></div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         ) : (
