@@ -53,22 +53,22 @@ export default function HomeSection() {
   }, []);
   
   return (
-    <section id="home" className="pt-6 pb-12 bg-background">
+    <section id="home" className="pt-24 pb-12 bg-background">
       <div className="container mx-auto px-4">
         {/* Hero Section */}
         <div className="relative w-full h-[500px] rounded-lg overflow-hidden mb-12">
           <Image 
             src={heroImage?.image 
               ? urlForImage(heroImage.image).width(1200).height(500).url() 
-              : "/images/hero-hardware.png"}
+              : "/images/hero-transparent.png"}
             alt={heroImage?.title || "Nine Mile Hardware Store"}
             fill
             priority
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col items-center justify-center text-center p-6">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">Nine Mile Hardware</h1>
-            <p className="text-xl md:text-2xl text-white max-w-3xl">Your local hardware store for all your home and garden needs.</p>
+          <div className="absolute inset-0 bg-primary/20 flex flex-col items-center justify-center text-center p-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-lg">Nine Mile Hardware</h1>
+            <p className="text-xl md:text-2xl text-white max-w-3xl drop-shadow-lg">Your local hardware store for all your home and garden needs.</p>
           </div>
         </div>
         
@@ -89,55 +89,27 @@ export default function HomeSection() {
             </div>
             
             {/* Store Interior Images */}
-            <div className="h-full grid grid-cols-2 gap-3">
+            <div className="h-full">
               {interiorImages.length > 0 ? (
-                // Use Sanity images if available
-                interiorImages.slice(0, 4).map((item, index) => (
-                  <div key={item._id || index} className="relative rounded-lg overflow-hidden">
-                    <Image 
-                      src={urlForImage(item.image).width(300).height(200).url()}
-                      alt={item.title || `Store Interior ${index + 1}`}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                ))
+                // Use first Sanity image if available
+                <div className="relative w-full h-full rounded-lg overflow-hidden">
+                  <Image 
+                    src={urlForImage(interiorImages[0].image).width(600).height(400).url()}
+                    alt={interiorImages[0].title || "Store Interior"}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
               ) : (
-                // Use fallback images if Sanity images are not available
-                <>
-                  <div className="relative rounded-lg overflow-hidden">
-                    <Image 
-                      src="/images/store-interior-1.png" 
-                      alt="Store Interior"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="relative rounded-lg overflow-hidden">
-                    <Image 
-                      src="/images/store-interior-2.png" 
-                      alt="Store Shelves" 
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="relative rounded-lg overflow-hidden">
-                    <Image 
-                      src="/images/store-interior-3.png" 
-                      alt="Hardware Selection" 
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="relative rounded-lg overflow-hidden">
-                    <Image 
-                      src="/images/store-interior-4.png" 
-                      alt="Paint Department" 
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                </>
+                // Use fallback image if Sanity images are not available
+                <div className="relative w-full h-full rounded-lg overflow-hidden">
+                  <Image 
+                    src="/images/store-interior-1.png" 
+                    alt="Store Interior"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
               )}
             </div>
           </div>

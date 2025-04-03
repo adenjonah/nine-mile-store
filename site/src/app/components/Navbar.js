@@ -54,7 +54,7 @@ export default function Navbar() {
   }, []);
   
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'py-2 shadow-md' : 'py-4'} bg-white`}>
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
@@ -73,7 +73,7 @@ export default function Navbar() {
                 <span className="font-bold text-xl">NH</span>
               </div>
             )}
-            <span className={`font-bold text-xl ${isScrolled ? 'text-primary' : 'text-white drop-shadow-md'}`}>
+            <span className="font-bold text-xl text-primary">
               {storeName}
             </span>
           </Link>
@@ -89,7 +89,7 @@ export default function Navbar() {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              className={`w-6 h-6 transition-all ${isScrolled ? 'text-black' : 'text-white'}`}
+              className="w-6 h-6 text-black"
             >
               {isMenuOpen ? (
                 <path
@@ -111,11 +111,11 @@ export default function Navbar() {
           
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8">
-            <NavLink href="#home" label="Home" isScrolled={isScrolled} />
-            <NavLink href="#services" label="Services" isScrolled={isScrolled} />
-            <NavLink href="#on-sale" label="On Sale" isScrolled={isScrolled} />
-            <NavLink href="#about" label="About" isScrolled={isScrolled} />
-            <NavLink href="#contact" label="Contact" isScrolled={isScrolled} />
+            <NavLink href="#home" label="Home" />
+            <NavLink href="#services" label="Services" />
+            <NavLink href="#on-sale" label="On Sale" />
+            <NavLink href="#about" label="About" />
+            <NavLink href="#contact" label="Contact" />
           </div>
         </div>
         
@@ -138,13 +138,11 @@ export default function Navbar() {
   );
 }
 
-function NavLink({ href, label, isScrolled }) {
+function NavLink({ href, label }) {
   return (
     <Link
       href={href}
-      className={`text-sm font-semibold transition-colors hover:text-primary ${
-        isScrolled ? 'text-black' : 'text-white drop-shadow-md'
-      }`}
+      className="text-sm font-semibold text-black transition-colors hover:text-primary"
     >
       {label}
     </Link>

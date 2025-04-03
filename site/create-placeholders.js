@@ -3,7 +3,10 @@ const path = require('path');
 
 // Placeholder images to create
 const images = [
-  // Hero image
+  // Hero image with transparent background
+  { path: 'public/images/hero-transparent.png', width: 1200, height: 500, text: '', transparent: true },
+  
+  // Regular hero image
   { path: 'public/images/hero-hardware.png', width: 1200, height: 500, text: 'Hero Image' },
   
   // Store interior images
@@ -43,13 +46,19 @@ images.forEach(img => {
   }
   
   // Create SVG placeholder
-  const svg = `
+  const svg = img.transparent 
+    ? `
+<svg width="${img.width}" height="${img.height}" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="transparent"/>
+</svg>
+    `.trim()
+    : `
 <svg width="${img.width}" height="${img.height}" xmlns="http://www.w3.org/2000/svg">
   <rect width="100%" height="100%" fill="#f0f0f0"/>
   <rect width="100%" height="100%" fill="#e0e0e0" opacity="0.5"/>
   <text x="50%" y="50%" font-family="Arial" font-size="24" fill="#666" text-anchor="middle" dominant-baseline="middle">${img.text}</text>
 </svg>
-  `.trim();
+    `.trim();
   
   // Convert to buffer
   const buffer = Buffer.from(svg);
