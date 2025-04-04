@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { client } from '../../lib/sanity';
 import { urlForImage } from '../../lib/sanity-image';
+import { addCacheBuster } from '../../lib/cache-utils';
 
 export default function OnSaleSection() {
   const [saleItems, setSaleItems] = useState([]);
@@ -57,8 +58,8 @@ export default function OnSaleSection() {
           setIsLoading(true);
         }
         
-        // Fetch products on sale
-        const products = await client.fetch(`
+        // Fetch products on sale with cache buster
+        const products = await client.fetch(addCacheBuster(`
           *[_type == "product" && onSale == true] {
             _id,
             name,
@@ -67,15 +68,15 @@ export default function OnSaleSection() {
             salePrice,
             image
           }
-        `);
+        `));
         
-        // Fetch closeout items
-        const closeouts = await client.fetch(`
+        // Fetch closeout items with cache buster
+        const closeouts = await client.fetch(addCacheBuster(`
           *[_type == "closeoutItem" && active == true] {
             _id,
             title
           }
-        `);
+        `));
         
         // Only update state if component is still mounted
         if (isMounted) {
