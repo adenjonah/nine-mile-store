@@ -7,14 +7,15 @@ export default {
       name: 'platform',
       title: 'Platform',
       type: 'string',
+      description: 'The social media platform name',
       options: {
         list: [
-          {title: 'Facebook', value: 'facebook'},
-          {title: 'Instagram', value: 'instagram'},
-          {title: 'YouTube', value: 'youtube'},
-          {title: 'Twitter', value: 'twitter'},
-          {title: 'LinkedIn', value: 'linkedin'}
-        ]
+          { title: 'Facebook', value: 'facebook' },
+          { title: 'Instagram', value: 'instagram' },
+          { title: 'YouTube', value: 'youtube' },
+          { title: 'Twitter', value: 'twitter' },
+          { title: 'LinkedIn', value: 'linkedin' },
+        ],
       },
       validation: Rule => Rule.required()
     },
@@ -22,6 +23,7 @@ export default {
       name: 'url',
       title: 'URL',
       type: 'url',
+      description: 'The URL to the social media profile or page',
       validation: Rule => Rule.required().uri({
         scheme: ['http', 'https']
       })
@@ -30,7 +32,7 @@ export default {
       name: 'orderRank',
       title: 'Display Order',
       type: 'number',
-      description: 'Controls the order in which social links appear (lower numbers first)',
+      description: 'Order in which to display this social link (lower numbers first)',
       validation: Rule => Rule.required().min(0)
     }
   ],
@@ -39,11 +41,11 @@ export default {
       title: 'platform',
       subtitle: 'url'
     },
-    prepare({title, subtitle}) {
+    prepare({ title, subtitle }) {
       return {
         title: title.charAt(0).toUpperCase() + title.slice(1),
-        subtitle
-      }
+        subtitle: subtitle
+      };
     }
   }
 } 
