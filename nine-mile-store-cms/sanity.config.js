@@ -2,9 +2,8 @@ import {defineConfig} from 'sanity'
 import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemaTypes'
-import {structure} from './deskStructure'
 
-// Sanity configuration with clear cache hint
+// Simplified configuration without custom structure
 export default defineConfig({
   name: 'default',
   title: 'Nine Mile Store CMS',
@@ -13,7 +12,7 @@ export default defineConfig({
   dataset: 'production-new',
 
   plugins: [
-    structureTool({structure}),
+    structureTool(),
     visionTool(),
   ],
 
