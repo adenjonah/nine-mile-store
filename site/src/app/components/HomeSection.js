@@ -5,7 +5,7 @@ import { useStoreData } from '../../lib/StoreDataContext';
 import { urlForImage } from '../../lib/sanity-image';
 
 export default function HomeSection() {
-  const { heroImage, interiorImages, loading } = useStoreData();
+  const { heroImage, blurbPhotos, loading } = useStoreData();
   
   return (
     <section id="home" className="pt-24 pb-12 bg-background">
@@ -55,22 +55,22 @@ export default function HomeSection() {
               </p>
             </div>
             
-            {/* Store Interior Images */}
+            {/* Blurb Photo */}
             <div className="h-full">
               {loading ? (
                 <div className="w-full h-full bg-gray-200 animate-pulse rounded-lg"></div>
-              ) : interiorImages.length > 0 ? (
+              ) : blurbPhotos.length > 0 ? (
                 <div className="relative w-full h-full rounded-lg overflow-hidden">
                   <Image 
-                    src={urlForImage(interiorImages[0].image).width(600).height(400).url()}
-                    alt={interiorImages[0].title || "Store Interior"}
+                    src={urlForImage(blurbPhotos[0].image).width(600).height(400).url()}
+                    alt={blurbPhotos[0].title || "Store Photo"}
                     fill
                     className="object-cover"
                   />
                 </div>
               ) : (
                 <div className="w-full h-full bg-background-alternate flex items-center justify-center rounded-lg">
-                  <span className="text-gray-500">No store interior images available</span>
+                  <span className="text-gray-500">No blurb photos available</span>
                 </div>
               )}
             </div>

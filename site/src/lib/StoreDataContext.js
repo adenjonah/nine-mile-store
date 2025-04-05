@@ -13,12 +13,12 @@ export function StoreDataProvider({ children }) {
     services: [],
     landscapingServices: [],
     saleItems: [],
-    closeoutItems: [],
     heroImage: null,
-    interiorImages: [],
+    blurbPhotos: [],
     staffImages: [],
     communityImages: [],
     logo: null,
+    socialLinks: [],
     loading: true
   });
 
@@ -56,23 +56,23 @@ export function StoreDataProvider({ children }) {
             salePrice,
             image
           },
-          "closeoutItems": *[_type == "closeoutItem" && active == true] {
-            _id,
-            title,
-            discount,
-            image
-          },
           "images": *[_type == "siteImage"] {
             _id,
             title,
             category,
             image
+          },
+          "socialLinks": *[_type == "socialLink"] | order(orderRank) {
+            _id,
+            platform,
+            url,
+            icon
           }
         }`);
 
         // Process images by category
         const heroImage = data.images?.find(img => img.category === 'hero') || null;
-        const interiorImages = data.images?.filter(img => img.category === 'interior') || [];
+        const blurbPhotos = data.images?.filter(img => img.category === 'blurbPhoto') || [];
         const staffImages = data.images?.filter(img => img.category === 'staff') || [];
         const communityImages = data.images?.filter(img => img.category === 'community') || [];
         const logo = data.images?.find(img => img.category === 'logo') || null;
@@ -86,12 +86,12 @@ export function StoreDataProvider({ children }) {
           services: data.services || [],
           landscapingServices: processedLandscapingServices,
           saleItems: data.saleItems || [],
-          closeoutItems: data.closeoutItems || [],
           heroImage,
-          interiorImages,
+          blurbPhotos,
           staffImages,
           communityImages,
           logo,
+          socialLinks: data.socialLinks || [],
           loading: false
         });
       } catch (error) {

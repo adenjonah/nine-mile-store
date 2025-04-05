@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useStoreData } from '../../lib/StoreDataContext';
+import SocialLinks from '../../components/SocialLinks';
 
 export default function Footer() {
   const { storeInfo, storeHours } = useStoreData();
@@ -23,6 +24,11 @@ export default function Footer() {
                 <p>Contact information not available</p>
               )}
             </address>
+            
+            {/* Social Media Links */}
+            <div className="mt-5">
+              <SocialLinks hoverClass="hover:text-background-light" />
+            </div>
           </div>
           
           {/* Quick Links */}

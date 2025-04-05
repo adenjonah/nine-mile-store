@@ -5,6 +5,7 @@ import closeoutItem from './closeoutItem'
 import siteImage from './siteImage'
 import storeHours from './storeHours'
 import storeInfo from './storeInfo'
+import socialLink from './socialLink'
 
 // Sanity default schemas
 import blockContent from './blockContent'
@@ -21,6 +22,7 @@ export const schemaTypes = [
   siteImage,
   storeHours,
   storeInfo,
+  socialLink,
   
   // Default blog schemas
   post,
