@@ -9,7 +9,7 @@ import { fetchWithNoCache } from '../../lib/cache-utils';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [storeName, setStoreName] = useState('Nine Mile Hardware');
+  const [storeName, setStoreName] = useState('');
   const [logo, setLogo] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
   
@@ -31,15 +31,12 @@ export default function Navbar() {
           }
         `);
         
-        if (storeInfo?.storeName) {
-          setStoreName(storeInfo.storeName);
-        }
-        
-        if (logoData?.image) {
-          setLogo(logoData);
-        }
+        setStoreName(storeInfo?.storeName || '');
+        setLogo(logoData || null);
       } catch (error) {
         console.error('Error fetching navbar data:', error);
+        setStoreName('');
+        setLogo(null);
       }
     }
     
@@ -64,7 +61,7 @@ export default function Navbar() {
               <div className="relative w-12 h-12 mr-3">
                 <Image 
                   src={urlForImage(logo.image).width(48).height(48).url()}
-                  alt={logo.title || storeName}
+                  alt={logo.title || "Store Logo"}
                   fill
                   className="object-contain"
                 />
@@ -75,7 +72,7 @@ export default function Navbar() {
               </div>
             )}
             <span className="font-bold text-xl text-primary">
-              {storeName}
+              {storeName || 'Nine Mile Hardware'}
             </span>
           </Link>
           

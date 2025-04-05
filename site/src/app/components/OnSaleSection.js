@@ -11,61 +11,6 @@ export default function OnSaleSection() {
   const [closeoutItems, setCloseoutItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Fallback data in case Sanity isn't populated yet
-  const fallbackSaleItems = [
-    {
-      id: 1,
-      name: 'Miracle-Gro Potting Mix',
-      description: '2 cu. ft. bag - Perfect for all potted plants',
-      regularPrice: '$12.99',
-      salePrice: '$9.99',
-      image: 'potting-mix.png',
-    },
-    {
-      id: 2,
-      name: 'Weber Charcoal Grill',
-      description: '22-inch Original Kettle Premium Charcoal Grill',
-      regularPrice: '$175.00',
-      salePrice: '$149.99',
-      image: 'charcoal-grill.png',
-    },
-    {
-      id: 3,
-      name: 'Premium Bird Seed Mix',
-      description: '20 lb bag - Attracts a variety of wild birds',
-      regularPrice: '$24.99',
-      salePrice: '$19.99',
-      image: 'bird-seed.png',
-    },
-  ];
-  
-  const fallbackCloseoutItems = [
-    {
-      _id: "closeout1",
-      title: "Assorted Garden Tools",
-      discount: "30% off",
-      image: null
-    },
-    {
-      _id: "closeout2", 
-      title: "Select Pet Toys",
-      discount: "Buy One Get One Free",
-      image: null
-    },
-    {
-      _id: "closeout3",
-      title: "Remaining Summer Items",
-      discount: "Up to 50% off",
-      image: null
-    },
-    {
-      _id: "closeout4",
-      title: "Lawn Fertilizer",
-      discount: "25% off",
-      image: null
-    }
-  ];
-  
   useEffect(() => {
     let isMounted = true;
     
@@ -73,10 +18,7 @@ export default function OnSaleSection() {
       try {
         if (!isMounted) return;
         
-        // Don't set loading if we already have data
-        if (saleItems.length === 0) {
-          setIsLoading(true);
-        }
+        setIsLoading(true);
         
         // Fetch products on sale using no-cache fetch
         const products = await fetchWithNoCache(`
@@ -102,15 +44,8 @@ export default function OnSaleSection() {
         
         // Only update state if component is still mounted
         if (isMounted) {
-          // If we have products from Sanity, use them, otherwise keep using fallback data
-          if (products && products.length > 0) {
-            setSaleItems(products);
-          }
-          
-          // If we have closeout items from Sanity, use them, otherwise keep using fallback data
-          if (closeouts && closeouts.length > 0) {
-            setCloseoutItems(closeouts);
-          }
+          setSaleItems(products || []);
+          setCloseoutItems(closeouts || []);
           
           // Set loading to false after a minimum delay of 1000ms to prevent flickering
           setTimeout(() => {
@@ -121,19 +56,12 @@ export default function OnSaleSection() {
         }
       } catch (error) {
         console.error('Error fetching data:', error);
-        // Use fallback data if there's an error
         if (isMounted) {
-          setSaleItems(fallbackSaleItems);
-          setCloseoutItems(fallbackCloseoutItems);
+          setSaleItems([]);
+          setCloseoutItems([]);
           setIsLoading(false);
         }
       }
-    }
-    
-    // Set initial data to fallback immediately to prevent flash
-    if (saleItems.length === 0) {
-      setSaleItems(fallbackSaleItems);
-      setCloseoutItems(fallbackCloseoutItems);
     }
     
     fetchData();
@@ -142,7 +70,7 @@ export default function OnSaleSection() {
     return () => {
       isMounted = false;
     };
-  }, [fallbackSaleItems, fallbackCloseoutItems]);
+  }, []);
   
   return (
     <section id="on-sale" className="py-12 bg-background-alternate">
@@ -186,96 +114,92 @@ export default function OnSaleSection() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            {saleItems.map((item) => (
-              <div 
-                key={item._id || item.id} 
-                className="bg-white border border-gray-200 rounded-lg p-6 shadow-theme-md hover:shadow-theme-lg transition-all"
-              >
-                {/* Product Image */}
-                <div className="w-full h-48 rounded-md mb-4 overflow-hidden">
-                  {item.image ? (
-                    <div className="relative w-full h-full">
+          <>
+            {saleItems.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                {saleItems.map((item) => (
+                  <div 
+                    key={item._id} 
+                    className="bg-white border border-gray-200 rounded-lg p-6 shadow-theme-md hover:shadow-theme-lg transition-all"
+                  >
+                    {/* Product Image */}
+                    <div className="w-full h-48 rounded-md mb-4 overflow-hidden">
+                      {item.image ? (
+                        <div className="relative w-full h-full">
+                          <Image 
+                            src={urlForImage(item.image).width(400).height(300).url()}
+                            alt={item.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-full h-full bg-background-alternate flex items-center justify-center">
+                          <span className="text-black">No Product Image</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Product Details */}
+                    <h3 className="text-lg font-semibold mb-2 text-black">{item.name}</h3>
+                    <p className="text-black mb-4">{item.description}</p>
+                    <div className="flex items-center mt-auto">
+                      <span className="text-gray-500 line-through mr-3">{item.regularPrice}</span>
+                      <span className="text-white bg-primary px-3 py-1 rounded-full font-bold text-md">{item.salePrice}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md mb-12 text-center">
+                <p className="text-black text-lg">No sale items available. Please check back later.</p>
+              </div>
+            )}
+            
+            {/* Closeout Section */}
+            {closeoutItems.length > 0 ? (
+              <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md">
+                <h3 className="text-xl font-semibold mb-6 text-black">Closeout Items</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="relative w-full h-64 rounded-md overflow-hidden">
+                    {closeoutItems[0].image ? (
                       <Image 
-                        src={item.image.asset 
-                          ? urlForImage(item.image).width(400).height(300).url() 
-                          : `/images/products/${item.image}`}
-                        alt={item.name}
+                        src={urlForImage(closeoutItems[0].image).width(400).height(300).url()}
+                        alt="Closeout Items"
                         fill
                         className="object-cover"
                       />
+                    ) : (
+                      <div className="w-full h-full bg-background-alternate flex items-center justify-center">
+                        <span className="text-black">No Closeout Image</span>
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-primary/40 flex items-center justify-center">
+                      <span className="text-white font-bold text-xl">Closeout Sale</span>
                     </div>
-                  ) : (
-                    <div className="w-full h-full bg-background-alternate flex items-center justify-center">
-                      <span className="text-black">Product Image</span>
-                    </div>
-                  )}
+                  </div>
+                  <ul className="grid grid-cols-1 gap-4">
+                    {closeoutItems.map((item) => (
+                      <li key={item._id} className="flex items-center bg-background-alternate p-3 rounded-lg">
+                        <span className="w-3 h-3 bg-primary rounded-full mr-3 flex-shrink-0"></span>
+                        <span className="text-black font-medium">{item.title} {item.discount ? `- ${item.discount}` : ''}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
                 
-                {/* Product Details */}
-                <h3 className="text-lg font-semibold mb-2 text-black">{item.name}</h3>
-                <p className="text-black mb-4">{item.description}</p>
-                <div className="flex items-center mt-auto">
-                  <span className="text-gray-500 line-through mr-3">{item.regularPrice}</span>
-                  <span className="text-white bg-primary px-3 py-1 rounded-full font-bold text-md">{item.salePrice}</span>
+                <div className="mt-8 p-4 border-t border-gray-200">
+                  <p className="text-black text-center">
+                    Sale prices valid through the end of the month. While supplies last. Cannot be combined with other offers.
+                  </p>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
-        
-        {/* Closeout Section */}
-        {!isLoading && (
-          <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md">
-            <h3 className="text-xl font-semibold mb-6 text-black">Closeout Items</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="relative w-full h-64 rounded-md overflow-hidden">
-                {closeoutItems.length > 0 && closeoutItems[0].image ? (
-                  <Image 
-                    src={urlForImage(closeoutItems[0].image).width(400).height(300).url()}
-                    alt="Closeout Items"
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <Image 
-                    src="/images/products/garden-tools.png"
-                    alt="Garden Tools on Sale"
-                    fill
-                    className="object-cover"
-                  />
-                )}
-                <div className="absolute inset-0 bg-primary/40 flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">Closeout Sale</span>
-                </div>
+            ) : (
+              <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md text-center">
+                <p className="text-black text-lg">No closeout items available. Please check back later.</p>
               </div>
-              <ul className="grid grid-cols-1 gap-4">
-                {Array.isArray(closeoutItems) && closeoutItems.some(item => typeof item === 'object') ? (
-                  // Handle Sanity data structure
-                  closeoutItems.map((item) => (
-                    <li key={item._id} className="flex items-center bg-background-alternate p-3 rounded-lg">
-                      <span className="w-3 h-3 bg-primary rounded-full mr-3 flex-shrink-0"></span>
-                      <span className="text-black font-medium">{item.title} {item.discount ? `- ${item.discount}` : ''}</span>
-                    </li>
-                  ))
-                ) : (
-                  // Handle fallback string array
-                  closeoutItems.map((item, index) => (
-                    <li key={index} className="flex items-center bg-background-alternate p-3 rounded-lg">
-                      <span className="w-3 h-3 bg-primary rounded-full mr-3 flex-shrink-0"></span>
-                      <span className="text-black font-medium">{item}</span>
-                    </li>
-                  ))
-                )}
-              </ul>
-            </div>
-            
-            <div className="mt-8 p-4 border-t border-gray-200">
-              <p className="text-black text-center">
-                Sale prices valid through the end of the month. While supplies last. Cannot be combined with other offers.
-              </p>
-            </div>
-          </div>
+            )}
+          </>
         )}
       </div>
     </section>

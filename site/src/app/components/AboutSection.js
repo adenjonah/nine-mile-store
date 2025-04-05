@@ -7,21 +7,8 @@ import { urlForImage } from '../../lib/sanity-image';
 import { fetchWithNoCache } from '../../lib/cache-utils';
 
 export default function AboutSection() {
-  const [storeHours, setStoreHours] = useState({
-    monday: '8:00 AM - 6:00 PM',
-    tuesday: '8:00 AM - 6:00 PM',
-    wednesday: '8:00 AM - 6:00 PM',
-    thursday: '8:00 AM - 6:00 PM',
-    friday: '8:00 AM - 6:00 PM',
-    saturday: '9:00 AM - 5:00 PM',
-    sunday: '10:00 AM - 4:00 PM'
-  });
-  const [storeInfo, setStoreInfo] = useState({
-    phone: '(509)-466-9502',
-    address: '12516 N Nine Mile Rd',
-    city: 'Nine Mile Falls, WA 99026',
-    communityText: 'At Nine Mile Hardware, we believe in giving back to our community. We regularly participate in local events and support various charitable organizations throughout the year.'
-  });
+  const [storeHours, setStoreHours] = useState({});
+  const [storeInfo, setStoreInfo] = useState({});
   const [staffImages, setStaffImages] = useState([]);
   const [communityImages, setCommunityImages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -72,24 +59,17 @@ export default function AboutSection() {
           }[0...2]
         `);
         
-        // Update state with fetched data if available
-        if (hours) {
-          setStoreHours(prevHours => ({ ...prevHours, ...hours }));
-        }
-        
-        if (info) {
-          setStoreInfo(prevInfo => ({ ...prevInfo, ...info }));
-        }
-        
-        if (staffData && staffData.length > 0) {
-          setStaffImages(staffData);
-        }
-        
-        if (communityData && communityData.length > 0) {
-          setCommunityImages(communityData);
-        }
+        // Update state with fetched data
+        setStoreHours(hours || {});
+        setStoreInfo(info || {});
+        setStaffImages(staffData || []);
+        setCommunityImages(communityData || []);
       } catch (error) {
         console.error('Error fetching about data:', error);
+        setStoreHours({});
+        setStoreInfo({});
+        setStaffImages([]);
+        setCommunityImages([]);
       } finally {
         // Add a slight delay to ensure the loading state is visible
         setTimeout(() => {
@@ -125,9 +105,15 @@ export default function AboutSection() {
                   </div>
                   <h3 className="text-xl font-bold text-black">Contact Information</h3>
                 </div>
-                <p className="text-lg font-medium text-black mb-2">{storeInfo.phone}</p>
-                <p className="text-black mb-1">{storeInfo.address}</p>
-                <p className="text-black mb-6">{storeInfo.city}</p>
+                {storeInfo.phone ? (
+                  <>
+                    <p className="text-lg font-medium text-black mb-2">{storeInfo.phone}</p>
+                    <p className="text-black mb-1">{storeInfo.address || "No address available"}</p>
+                    <p className="text-black mb-6">{storeInfo.city || "No city available"}</p>
+                  </>
+                ) : (
+                  <p className="text-black mb-6">No contact information available. Please check back later.</p>
+                )}
                 
                 <div className="relative w-full h-48 rounded-md overflow-hidden">
                   {staffImages.length > 0 ? (
@@ -138,12 +124,9 @@ export default function AboutSection() {
                       className="object-cover"
                     />
                   ) : (
-                    <Image 
-                      src="/images/staff/store-staff.png"
-                      alt="Our Staff"
-                      fill
-                      className="object-cover"
-                    />
+                    <div className="w-full h-full bg-background-alternate flex items-center justify-center">
+                      <span className="text-gray-500">No staff image available</span>
+                    </div>
                   )}
                 </div>
               </div>
@@ -157,15 +140,19 @@ export default function AboutSection() {
                   </div>
                   <h3 className="text-xl font-bold text-black">Hours of Operation</h3>
                 </div>
-                <div className="space-y-2 mb-6">
-                  <p className="text-black bg-background-alternate px-3 py-2 rounded-md">Monday: {storeHours.monday}</p>
-                  <p className="text-black bg-background-alternate px-3 py-2 rounded-md">Tuesday: {storeHours.tuesday}</p>
-                  <p className="text-black bg-background-alternate px-3 py-2 rounded-md">Wednesday: {storeHours.wednesday}</p>
-                  <p className="text-black bg-background-alternate px-3 py-2 rounded-md">Thursday: {storeHours.thursday}</p>
-                  <p className="text-black bg-background-alternate px-3 py-2 rounded-md">Friday: {storeHours.friday}</p>
-                  <p className="text-black bg-background-alternate px-3 py-2 rounded-md">Saturday: {storeHours.saturday}</p>
-                  <p className="text-black bg-background-alternate px-3 py-2 rounded-md">Sunday: {storeHours.sunday}</p>
-                </div>
+                {Object.keys(storeHours).length > 0 ? (
+                  <div className="space-y-2 mb-6">
+                    <p className="text-black bg-background-alternate px-3 py-2 rounded-md">Monday: {storeHours.monday || "Not available"}</p>
+                    <p className="text-black bg-background-alternate px-3 py-2 rounded-md">Tuesday: {storeHours.tuesday || "Not available"}</p>
+                    <p className="text-black bg-background-alternate px-3 py-2 rounded-md">Wednesday: {storeHours.wednesday || "Not available"}</p>
+                    <p className="text-black bg-background-alternate px-3 py-2 rounded-md">Thursday: {storeHours.thursday || "Not available"}</p>
+                    <p className="text-black bg-background-alternate px-3 py-2 rounded-md">Friday: {storeHours.friday || "Not available"}</p>
+                    <p className="text-black bg-background-alternate px-3 py-2 rounded-md">Saturday: {storeHours.saturday || "Not available"}</p>
+                    <p className="text-black bg-background-alternate px-3 py-2 rounded-md">Sunday: {storeHours.sunday || "Not available"}</p>
+                  </div>
+                ) : (
+                  <p className="text-black mb-6">No store hours available. Please check back later.</p>
+                )}
               </div>
             </div>
             
@@ -175,20 +162,26 @@ export default function AboutSection() {
               
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
-                  <p className="text-black mb-4">
-                    {storeInfo.communityText}
-                  </p>
-                  <p className="text-black mb-4">
-                    Our team members are active in the Nine Mile Falls community, and we&apos;re proud to support local schools, youth sports teams, and community initiatives.
-                  </p>
-                  <p className="text-black">
-                    Stop by the store to learn more about our upcoming community events and how you can get involved!
-                  </p>
+                  {storeInfo.communityText ? (
+                    <>
+                      <p className="text-black mb-4">
+                        {storeInfo.communityText}
+                      </p>
+                      <p className="text-black mb-4">
+                        Our team members are active in the Nine Mile Falls community, and we&apos;re proud to support local schools, youth sports teams, and community initiatives.
+                      </p>
+                      <p className="text-black">
+                        Stop by the store to learn more about our upcoming community events and how you can get involved!
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-black">No community information available. Please check back later.</p>
+                  )}
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   {communityImages.length > 0 ? (
-                    // Display Sanity images if available
+                    // Display Sanity images
                     communityImages.map((item, index) => (
                       <div key={item._id} className="relative rounded-lg overflow-hidden h-40">
                         <Image 
@@ -200,25 +193,9 @@ export default function AboutSection() {
                       </div>
                     ))
                   ) : (
-                    // Fallback images
-                    <>
-                      <div className="relative rounded-lg overflow-hidden h-40">
-                        <Image 
-                          src="/images/community/community-event-1.png"
-                          alt="Community Event"
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="relative rounded-lg overflow-hidden h-40">
-                        <Image 
-                          src="/images/community/community-event-2.png"
-                          alt="Community Support"
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    </>
+                    <div className="col-span-2 flex items-center justify-center h-40 bg-background-alternate rounded-lg">
+                      <p className="text-black">No community images available</p>
+                    </div>
                   )}
                 </div>
               </div>

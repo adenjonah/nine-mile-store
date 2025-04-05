@@ -33,15 +33,12 @@ export default function HomeSection() {
           }[0...3]
         `);
         
-        if (heroData?.image) {
-          setHeroImage(heroData);
-        }
-        
-        if (interiorData && interiorData.length > 0) {
-          setInteriorImages(interiorData);
-        }
+        setHeroImage(heroData || null);
+        setInteriorImages(interiorData || []);
       } catch (error) {
         console.error('Error fetching images:', error);
+        setHeroImage(null);
+        setInteriorImages([]);
       } finally {
         // Add a slight delay to ensure the loading state is visible
         setTimeout(() => {
@@ -58,19 +55,27 @@ export default function HomeSection() {
       <div className="container mx-auto px-4">
         {/* Hero Section */}
         <div className="relative w-full h-[500px] rounded-lg overflow-hidden mb-12">
-          <Image 
-            src={heroImage?.image 
-              ? urlForImage(heroImage.image).width(1200).height(500).url() 
-              : "/images/hero-transparent.png"}
-            alt={heroImage?.title || "Nine Mile Hardware Store"}
-            fill
-            priority
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-primary/20 flex flex-col items-center justify-center text-center p-6">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-lg">Nine Mile Hardware</h1>
-            <p className="text-xl md:text-2xl text-white max-w-3xl drop-shadow-lg">Your local hardware store for all your home and garden needs.</p>
-          </div>
+          {heroImage?.image ? (
+            <>
+              <Image 
+                src={urlForImage(heroImage.image).width(1200).height(500).url()}
+                alt={heroImage.title || "Nine Mile Hardware Store"}
+                fill
+                priority
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-primary/20 flex flex-col items-center justify-center text-center p-6">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-lg">Nine Mile Hardware</h1>
+                <p className="text-xl md:text-2xl text-white max-w-3xl drop-shadow-lg">Your local hardware store for all your home and garden needs.</p>
+              </div>
+            </>
+          ) : (
+            <div className="bg-background-alternate flex flex-col items-center justify-center text-center p-6 h-full">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-4">Nine Mile Hardware</h1>
+              <p className="text-xl md:text-2xl text-black max-w-3xl">Your local hardware store for all your home and garden needs.</p>
+              <p className="mt-8 text-gray-500">Hero image not available</p>
+            </div>
+          )}
         </div>
         
         {/* Family-Owned Business Section */}
@@ -92,7 +97,6 @@ export default function HomeSection() {
             {/* Store Interior Images */}
             <div className="h-full">
               {interiorImages.length > 0 ? (
-                // Use first Sanity image if available
                 <div className="relative w-full h-full rounded-lg overflow-hidden">
                   <Image 
                     src={urlForImage(interiorImages[0].image).width(600).height(400).url()}
@@ -102,14 +106,8 @@ export default function HomeSection() {
                   />
                 </div>
               ) : (
-                // Use fallback image if Sanity images are not available
-                <div className="relative w-full h-full rounded-lg overflow-hidden">
-                  <Image 
-                    src="/images/store-interior-1.png" 
-                    alt="Store Interior"
-                    fill
-                    className="object-cover"
-                  />
+                <div className="w-full h-full bg-background-alternate flex items-center justify-center rounded-lg">
+                  <span className="text-gray-500">No store interior images available</span>
                 </div>
               )}
             </div>
