@@ -27,5 +27,13 @@ export const structure = (S) =>
             .id('storeHours')
             .schemaType('storeHours')
             .documentId('storeHours')
+        ),
+      S.listItem()
+        .title('Site Favicon')
+        .child(
+          S.editor()
+            .id('favicon')
+            .schemaType('favicon')
+            .documentId('favicon')
         )
     ]) 

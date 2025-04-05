@@ -9,6 +9,7 @@ nine-mile-store/
 │   ├── deskStructure.js    # Studio navigation structure
 │   └── sanity.config.js    # CMS configuration
 └── site/                   # Next.js website
+    ├── public/             # Static files (includes favicon files)
     └── src/
         ├── lib/            # Shared utilities
         │   ├── sanity.js   # Sanity client configuration
@@ -88,6 +89,31 @@ When adding, removing, or modifying content types:
    npm run dev
    ```
 
+## Managing Favicons
+
+The site's favicon is managed through the CMS and can be updated without code changes:
+
+1. **Uploading a New Favicon**:
+   - Go to the Sanity Studio > Site Favicon
+   - Upload a square image (recommended 512x512px)
+   - Optionally upload a separate Apple Touch Icon
+   - Save and publish
+
+2. **Generating Static Favicon Files**:
+   After uploading a new favicon via the CMS, run the favicon generator:
+   
+   ```bash
+   cd site
+   node -e "require('./src/lib/FaviconGenerator.js').generateFavicons()"
+   ```
+   
+   This will output URLs for all favicon sizes. Download each one and save to the `site/public` directory with the corresponding filename.
+
+3. **Verifying Favicons**:
+   - The dynamic favicon component will update the favicon in real-time
+   - Static favicons will be used for initial page load and SEO
+   - Check different devices to ensure proper display
+
 ## Troubleshooting
 
 ### CMS Not Reflecting Changes
@@ -130,4 +156,5 @@ If you get "Command is not available outside of a Sanity project context":
 - siteImage
 - storeHours
 - storeInfo
-- socialLink 
+- socialLink
+- favicon 

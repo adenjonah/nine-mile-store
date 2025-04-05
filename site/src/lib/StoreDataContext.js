@@ -19,6 +19,8 @@ export function StoreDataProvider({ children }) {
     communityImages: [],
     logo: null,
     socialLinks: [],
+    favicon: null,
+    appleTouchIcon: null,
     loading: true
   });
 
@@ -67,6 +69,10 @@ export function StoreDataProvider({ children }) {
             platform,
             url,
             icon
+          },
+          "siteSettings": *[_type == "favicon"][0] {
+            favicon,
+            appleTouchIcon
           }
         }`);
 
@@ -92,6 +98,8 @@ export function StoreDataProvider({ children }) {
           communityImages,
           logo,
           socialLinks: data.socialLinks || [],
+          favicon: data.siteSettings?.favicon || null,
+          appleTouchIcon: data.siteSettings?.appleTouchIcon || null,
           loading: false
         });
       } catch (error) {

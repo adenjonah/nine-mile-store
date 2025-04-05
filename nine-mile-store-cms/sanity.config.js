@@ -8,6 +8,7 @@ import {structure} from './deskStructure'
 export default defineConfig({
   name: 'default',
   title: 'Nine Mile Store CMS',
+  icon: () => '🏪',
 
   projectId: 'f0k2uz7k',
   dataset: 'production-new',
@@ -19,5 +20,24 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
+  },
+  
+  document: {
+    // For the favicon document, create it automatically 
+    // if it doesn't exist
+    newDocumentOptions: (prev, {creationContext}) => {
+      if (creationContext.type === 'global') {
+        return prev.filter(
+          (templateItem) => templateItem.templateId !== 'favicon'
+        )
+      }
+      return prev
+    },
+    actions: (prev, {schemaType}) => {
+      if (schemaType === 'favicon') {
+        return prev.filter(({action}) => !['unpublish', 'delete', 'duplicate'].includes(action))
+      }
+      return prev
+    },
   },
 })

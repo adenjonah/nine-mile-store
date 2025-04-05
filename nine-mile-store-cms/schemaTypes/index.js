@@ -5,6 +5,7 @@ import siteImage from './siteImage'
 import storeHours from './storeHours'
 import storeInfo from './storeInfo'
 import socialLink from './socialLink'
+import favicon from './favicon'
 
 export const schemaTypes = [
   // Custom schemas for Nine Mile Store
@@ -15,4 +16,5 @@ export const schemaTypes = [
   storeHours,
   storeInfo,
   socialLink,
+  favicon,
 ]
