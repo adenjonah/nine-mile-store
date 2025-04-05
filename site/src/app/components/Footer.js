@@ -1,54 +1,9 @@
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { client } from '../../lib/sanity';
+import { useStoreData } from '../../lib/StoreDataContext';
 
 export default function Footer() {
-  const [storeInfo, setStoreInfo] = useState({});
-  const [storeHours, setStoreHours] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
+  const { storeInfo, storeHours } = useStoreData();
   const currentYear = new Date().getFullYear();
-  
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setIsLoading(true);
-        
-        // Fetch store info
-        const info = await client.fetch(`
-          *[_type == "storeInfo"][0] {
-            storeName,
-            phone,
-            address,
-            city
-          }
-        `);
-        
-        // Fetch store hours
-        const hours = await client.fetch(`
-          *[_type == "storeHours"][0] {
-            monday,
-            tuesday,
-            wednesday,
-            thursday,
-            friday,
-            saturday,
-            sunday
-          }
-        `);
-        
-        setStoreInfo(info || {});
-        setStoreHours(hours || {});
-      } catch (error) {
-        console.error('Error fetching footer data:', error);
-        setStoreInfo({});
-        setStoreHours({});
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    
-    fetchData();
-  }, []);
   
   return (
     <footer className="bg-primary-dark text-background-light py-12">

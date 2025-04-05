@@ -3,45 +3,15 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { client } from '../../lib/sanity';
+import { useStoreData } from '../../lib/StoreDataContext';
 import { urlForImage } from '../../lib/sanity-image';
-import { fetchWithNoCache } from '../../lib/cache-utils';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [storeName, setStoreName] = useState('');
-  const [logo, setLogo] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { storeInfo, logo } = useStoreData();
   
   useEffect(() => {
-    async function fetchStoreInfo() {
-      try {
-        // Fetch store name
-        const storeInfo = await fetchWithNoCache(`
-          *[_type == "storeInfo"][0] {
-            storeName
-          }
-        `);
-        
-        // Fetch logo
-        const logoData = await fetchWithNoCache(`
-          *[_type == "siteImage" && category == "logo"][0] {
-            title,
-            image
-          }
-        `);
-        
-        setStoreName(storeInfo?.storeName || '');
-        setLogo(logoData || null);
-      } catch (error) {
-        console.error('Error fetching navbar data:', error);
-        setStoreName('');
-        setLogo(null);
-      }
-    }
-    
-    fetchStoreInfo();
-    
     // Add scroll listener
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -72,7 +42,7 @@ export default function Navbar() {
               </div>
             )}
             <span className="font-bold text-xl text-primary">
-              {storeName || 'Nine Mile Hardware'}
+              {storeInfo?.storeName || 'Nine Mile Hardware'}
             </span>
           </Link>
           

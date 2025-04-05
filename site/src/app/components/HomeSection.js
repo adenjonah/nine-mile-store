@@ -1,61 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { client } from '../../lib/sanity';
+import { useStoreData } from '../../lib/StoreDataContext';
 import { urlForImage } from '../../lib/sanity-image';
-import { fetchWithNoCache } from '../../lib/cache-utils';
 
 export default function HomeSection() {
-  const [heroImage, setHeroImage] = useState(null);
-  const [interiorImages, setInteriorImages] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  
-  useEffect(() => {
-    async function fetchImages() {
-      try {
-        setIsLoading(true);
-        
-        // Fetch hero image
-        const heroData = await fetchWithNoCache(`
-          *[_type == "siteImage" && category == "hero"][0] {
-            title,
-            image
-          }
-        `);
-        
-        // Fetch interior images
-        const interiorData = await fetchWithNoCache(`
-          *[_type == "siteImage" && category == "interior"] {
-            _id,
-            title,
-            image
-          }[0...3]
-        `);
-        
-        setHeroImage(heroData || null);
-        setInteriorImages(interiorData || []);
-      } catch (error) {
-        console.error('Error fetching images:', error);
-        setHeroImage(null);
-        setInteriorImages([]);
-      } finally {
-        // Add a slight delay to ensure the loading state is visible
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 500);
-      }
-    }
-    
-    fetchImages();
-  }, []);
+  const { heroImage, interiorImages, loading } = useStoreData();
   
   return (
     <section id="home" className="pt-24 pb-12 bg-background">
       <div className="container mx-auto px-4">
         {/* Hero Section */}
         <div className="relative w-full h-[500px] rounded-lg overflow-hidden mb-12">
-          {heroImage?.image ? (
+          {loading ? (
+            <div className="w-full h-full bg-gray-200 animate-pulse flex items-center justify-center">
+              <span className="text-gray-400">Loading...</span>
+            </div>
+          ) : heroImage?.image ? (
             <>
               <Image 
                 src={urlForImage(heroImage.image).width(1200).height(500).url()}
@@ -96,7 +57,9 @@ export default function HomeSection() {
             
             {/* Store Interior Images */}
             <div className="h-full">
-              {interiorImages.length > 0 ? (
+              {loading ? (
+                <div className="w-full h-full bg-gray-200 animate-pulse rounded-lg"></div>
+              ) : interiorImages.length > 0 ? (
                 <div className="relative w-full h-full rounded-lg overflow-hidden">
                   <Image 
                     src={urlForImage(interiorImages[0].image).width(600).height(400).url()}

@@ -1,92 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { client } from '../../lib/sanity';
+import { useStoreData } from '../../lib/StoreDataContext';
 import { urlForImage } from '../../lib/sanity-image';
-import { fetchWithNoCache } from '../../lib/cache-utils';
 
 export default function AboutSection() {
-  const [storeHours, setStoreHours] = useState({});
-  const [storeInfo, setStoreInfo] = useState({});
-  const [staffImages, setStaffImages] = useState([]);
-  const [communityImages, setCommunityImages] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setIsLoading(true);
-        
-        // Fetch store hours
-        const hours = await fetchWithNoCache(`
-          *[_type == "storeHours"][0] {
-            monday,
-            tuesday,
-            wednesday,
-            thursday,
-            friday,
-            saturday,
-            sunday
-          }
-        `);
-        
-        // Fetch store info
-        const info = await fetchWithNoCache(`
-          *[_type == "storeInfo"][0] {
-            phone,
-            address,
-            city,
-            communityText
-          }
-        `);
-        
-        // Fetch staff images
-        const staffData = await fetchWithNoCache(`
-          *[_type == "siteImage" && category == "staff"] {
-            _id,
-            title,
-            image
-          }[0...2]
-        `);
-        
-        // Fetch community images
-        const communityData = await fetchWithNoCache(`
-          *[_type == "siteImage" && category == "community"] {
-            _id,
-            title,
-            image
-          }[0...2]
-        `);
-        
-        // Update state with fetched data
-        setStoreHours(hours || {});
-        setStoreInfo(info || {});
-        setStaffImages(staffData || []);
-        setCommunityImages(communityData || []);
-      } catch (error) {
-        console.error('Error fetching about data:', error);
-        setStoreHours({});
-        setStoreInfo({});
-        setStaffImages([]);
-        setCommunityImages([]);
-      } finally {
-        // Add a slight delay to ensure the loading state is visible
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 500);
-      }
-    }
-    
-    fetchData();
-  }, []);
+  const { storeHours, storeInfo, staffImages, communityImages, loading } = useStoreData();
   
   return (
     <section id="about" className="py-12 bg-background">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-10 text-black">ABOUT US</h2>
         
-        {isLoading ? (
+        {loading ? (
           <div className="flex justify-center items-center py-12">
             <div className="animate-pulse text-center">
               <p className="text-black">Loading store information...</p>

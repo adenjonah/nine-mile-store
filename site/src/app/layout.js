@@ -1,4 +1,5 @@
 import { Geist_Mono } from "next/font/google";
+import { StoreDataProvider } from "../lib/StoreDataContext";
 import "./globals.css";
 
 const geistMono = Geist_Mono({
@@ -18,7 +19,9 @@ export default function RootLayout({ children }) {
         className={`${geistMono.variable} antialiased`}
         data-long-press-delay="2000"
       >
-        {children}
+        <StoreDataProvider>
+          {children}
+        </StoreDataProvider>
       </body>
     </html>
   );

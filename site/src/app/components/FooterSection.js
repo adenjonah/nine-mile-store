@@ -1,59 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { client } from '../../lib/sanity';
+import { useStoreData } from '../../lib/StoreDataContext';
 
 export default function FooterSection() {
-  const [storeInfo, setStoreInfo] = useState({});
-  const [storeHours, setStoreHours] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-  
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setIsLoading(true);
-        
-        // Fetch store info
-        const info = await client.fetch(`
-          *[_type == "storeInfo"][0] {
-            storeName,
-            phone,
-            email,
-            address,
-            city
-          }
-        `);
-        
-        // Fetch store hours
-        const hours = await client.fetch(`
-          *[_type == "storeHours"][0] {
-            monday,
-            tuesday,
-            wednesday,
-            thursday,
-            friday,
-            saturday,
-            sunday
-          }
-        `);
-        
-        // Update state with fetched data
-        setStoreInfo(info || {});
-        setStoreHours(hours || {});
-      } catch (error) {
-        console.error('Error fetching footer data:', error);
-        setStoreInfo({});
-        setStoreHours({});
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    
-    fetchData();
-  }, []);
-  
+  const { storeInfo, storeHours, loading } = useStoreData();
   const currentYear = new Date().getFullYear();
   
   return (

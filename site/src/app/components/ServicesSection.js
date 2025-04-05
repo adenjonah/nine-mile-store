@@ -1,79 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { client } from '../../lib/sanity';
+import { useStoreData } from '../../lib/StoreDataContext';
 import { urlForImage } from '../../lib/sanity-image';
-import { fetchWithNoCache } from '../../lib/cache-utils';
 
 export default function ServicesSection() {
-  const [services, setServices] = useState([]);
-  const [landscapingServices, setLandscapingServices] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  
-  useEffect(() => {
-    let isMounted = true;
-    
-    async function fetchData() {
-      try {
-        if (!isMounted) return;
-        
-        setIsLoading(true);
-        
-        // Fetch services using the no-cache fetch method
-        const servicesData = await fetchWithNoCache(`
-          *[_type == "service"] {
-            _id,
-            title,
-            description,
-            image,
-            featured
-          }
-        `);
-        
-        // Fetch landscaping services using the no-cache fetch method
-        const landscapingData = await fetchWithNoCache(`
-          *[_type == "landscapingService"] {
-            _id,
-            title,
-            highlighted
-          } | order(highlighted desc)
-        `);
-        
-        // Only update state if component is still mounted
-        if (isMounted) {
-          setServices(servicesData || []);
-          
-          if (landscapingData && landscapingData.length > 0) {
-            setLandscapingServices(landscapingData.map(item => item.title));
-          } else {
-            setLandscapingServices([]);
-          }
-          
-          // Set loading to false after a minimum delay of 1000ms to prevent flickering
-          setTimeout(() => {
-            if (isMounted) {
-              setIsLoading(false);
-            }
-          }, 1000);
-        }
-      } catch (error) {
-        console.error('Error fetching services:', error);
-        if (isMounted) {
-          setServices([]);
-          setLandscapingServices([]);
-          setIsLoading(false);
-        }
-      }
-    }
-    
-    fetchData();
-    
-    // Cleanup function to prevent updates if component unmounts
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { services, landscapingServices, loading } = useStoreData();
   
   return (
     <section id="services" className="py-12 bg-background">
@@ -82,7 +14,7 @@ export default function ServicesSection() {
         <p className="text-center mb-10 text-black">We offer a variety of services to help with your home and garden needs</p>
         
         {/* Core Services */}
-        {isLoading ? (
+        {loading ? (
           <div className="w-full">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
               {[1, 2, 3, 4].map((item) => (

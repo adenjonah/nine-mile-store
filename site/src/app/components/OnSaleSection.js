@@ -1,76 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { client } from '../../lib/sanity';
+import { useStoreData } from '../../lib/StoreDataContext';
 import { urlForImage } from '../../lib/sanity-image';
-import { fetchWithNoCache } from '../../lib/cache-utils';
 
 export default function OnSaleSection() {
-  const [saleItems, setSaleItems] = useState([]);
-  const [closeoutItems, setCloseoutItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  
-  useEffect(() => {
-    let isMounted = true;
-    
-    async function fetchData() {
-      try {
-        if (!isMounted) return;
-        
-        setIsLoading(true);
-        
-        // Fetch products on sale using no-cache fetch
-        const products = await fetchWithNoCache(`
-          *[_type == "product" && onSale == true] {
-            _id,
-            name,
-            description,
-            regularPrice,
-            salePrice,
-            image
-          }
-        `);
-        
-        // Fetch closeout items using no-cache fetch
-        const closeouts = await fetchWithNoCache(`
-          *[_type == "closeoutItem" && active == true] {
-            _id,
-            title,
-            discount,
-            image
-          }
-        `);
-        
-        // Only update state if component is still mounted
-        if (isMounted) {
-          setSaleItems(products || []);
-          setCloseoutItems(closeouts || []);
-          
-          // Set loading to false after a minimum delay of 1000ms to prevent flickering
-          setTimeout(() => {
-            if (isMounted) {
-              setIsLoading(false);
-            }
-          }, 1000);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        if (isMounted) {
-          setSaleItems([]);
-          setCloseoutItems([]);
-          setIsLoading(false);
-        }
-      }
-    }
-    
-    fetchData();
-    
-    // Cleanup function to prevent updates if component unmounts
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { saleItems, closeoutItems, loading } = useStoreData();
   
   return (
     <section id="on-sale" className="py-12 bg-background-alternate">
@@ -79,7 +14,7 @@ export default function OnSaleSection() {
         <p className="text-center text-xl mb-8 text-black">THIS WEEK&apos;S SPECIALS</p>
         
         {/* Sale Items */}
-        {isLoading ? (
+        {loading ? (
           <div className="flex justify-center items-center py-12">
             <div className="w-full max-w-3xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
