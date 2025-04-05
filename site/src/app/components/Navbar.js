@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { client } from '../../lib/sanity';
 import { urlForImage } from '../../lib/sanity-image';
+import { fetchWithNoCache } from '../../lib/cache-utils';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,15 +17,15 @@ export default function Navbar() {
     async function fetchStoreInfo() {
       try {
         // Fetch store name
-        const storeInfo = await client.fetch(`
+        const storeInfo = await fetchWithNoCache(`
           *[_type == "storeInfo"][0] {
             storeName
           }
         `);
         
         // Fetch logo
-        const logoData = await client.fetch(`
-          *[_type == "siteImage" && category == "Logo"][0] {
+        const logoData = await fetchWithNoCache(`
+          *[_type == "siteImage" && category == "logo"][0] {
             title,
             image
           }

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { client } from '../../lib/sanity';
 import { urlForImage } from '../../lib/sanity-image';
+import { fetchWithNoCache } from '../../lib/cache-utils';
 
 export default function AboutSection() {
   const [storeHours, setStoreHours] = useState({
@@ -31,7 +32,7 @@ export default function AboutSection() {
         setIsLoading(true);
         
         // Fetch store hours
-        const hours = await client.fetch(`
+        const hours = await fetchWithNoCache(`
           *[_type == "storeHours"][0] {
             monday,
             tuesday,
@@ -44,7 +45,7 @@ export default function AboutSection() {
         `);
         
         // Fetch store info
-        const info = await client.fetch(`
+        const info = await fetchWithNoCache(`
           *[_type == "storeInfo"][0] {
             phone,
             address,
@@ -54,8 +55,8 @@ export default function AboutSection() {
         `);
         
         // Fetch staff images
-        const staffData = await client.fetch(`
-          *[_type == "siteImage" && category == "Staff"] {
+        const staffData = await fetchWithNoCache(`
+          *[_type == "siteImage" && category == "staff"] {
             _id,
             title,
             image
@@ -63,8 +64,8 @@ export default function AboutSection() {
         `);
         
         // Fetch community images
-        const communityData = await client.fetch(`
-          *[_type == "siteImage" && category == "Community"] {
+        const communityData = await fetchWithNoCache(`
+          *[_type == "siteImage" && category == "community"] {
             _id,
             title,
             image

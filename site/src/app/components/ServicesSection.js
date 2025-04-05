@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { client } from '../../lib/sanity';
 import { urlForImage } from '../../lib/sanity-image';
-import { addCacheBuster } from '../../lib/cache-utils';
+import { fetchWithNoCache } from '../../lib/cache-utils';
 
 export default function ServicesSection() {
   const [services, setServices] = useState([]);
@@ -60,8 +60,8 @@ export default function ServicesSection() {
           setIsLoading(true);
         }
         
-        // Fetch services with cache buster
-        const servicesData = await client.fetch(addCacheBuster(`
+        // Fetch services using the no-cache fetch method
+        const servicesData = await fetchWithNoCache(`
           *[_type == "service"] {
             _id,
             title,
@@ -69,16 +69,16 @@ export default function ServicesSection() {
             image,
             featured
           }
-        `));
+        `);
         
-        // Fetch landscaping services with cache buster
-        const landscapingData = await client.fetch(addCacheBuster(`
+        // Fetch landscaping services using the no-cache fetch method
+        const landscapingData = await fetchWithNoCache(`
           *[_type == "landscapingService"] {
             _id,
             title,
             highlighted
           } | order(highlighted desc)
-        `));
+        `);
         
         // Only update state if component is still mounted
         if (isMounted) {

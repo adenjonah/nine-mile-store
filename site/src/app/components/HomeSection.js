@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { client } from '../../lib/sanity';
 import { urlForImage } from '../../lib/sanity-image';
+import { fetchWithNoCache } from '../../lib/cache-utils';
 
 export default function HomeSection() {
   const [heroImage, setHeroImage] = useState(null);
@@ -16,16 +17,16 @@ export default function HomeSection() {
         setIsLoading(true);
         
         // Fetch hero image
-        const heroData = await client.fetch(`
-          *[_type == "siteImage" && category == "Hero"][0] {
+        const heroData = await fetchWithNoCache(`
+          *[_type == "siteImage" && category == "hero"][0] {
             title,
             image
           }
         `);
         
         // Fetch interior images
-        const interiorData = await client.fetch(`
-          *[_type == "siteImage" && category == "Interior"] {
+        const interiorData = await fetchWithNoCache(`
+          *[_type == "siteImage" && category == "interior"] {
             _id,
             title,
             image

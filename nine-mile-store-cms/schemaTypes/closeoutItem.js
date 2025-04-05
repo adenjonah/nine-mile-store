@@ -18,6 +18,14 @@ export default {
       type: 'boolean',
       title: 'Currently Active',
       initialValue: true
+    },
+    {
+      name: 'image',
+      type: 'image',
+      title: 'Closeout Item Image',
+      options: {
+        hotspot: true
+      }
     }
   ]
 } 

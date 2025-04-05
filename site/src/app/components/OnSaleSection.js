@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { client } from '../../lib/sanity';
 import { urlForImage } from '../../lib/sanity-image';
-import { addCacheBuster } from '../../lib/cache-utils';
+import { fetchWithNoCache } from '../../lib/cache-utils';
 
 export default function OnSaleSection() {
   const [saleItems, setSaleItems] = useState([]);
@@ -40,10 +40,30 @@ export default function OnSaleSection() {
   ];
   
   const fallbackCloseoutItems = [
-    "Assorted Garden Tools - 30% off",
-    "Select Pet Toys - Buy One Get One Free",
-    "Remaining Summer Items - Up to 50% off",
-    "Lawn Fertilizer - 25% off",
+    {
+      _id: "closeout1",
+      title: "Assorted Garden Tools",
+      discount: "30% off",
+      image: null
+    },
+    {
+      _id: "closeout2", 
+      title: "Select Pet Toys",
+      discount: "Buy One Get One Free",
+      image: null
+    },
+    {
+      _id: "closeout3",
+      title: "Remaining Summer Items",
+      discount: "Up to 50% off",
+      image: null
+    },
+    {
+      _id: "closeout4",
+      title: "Lawn Fertilizer",
+      discount: "25% off",
+      image: null
+    }
   ];
   
   useEffect(() => {
@@ -58,8 +78,8 @@ export default function OnSaleSection() {
           setIsLoading(true);
         }
         
-        // Fetch products on sale with cache buster
-        const products = await client.fetch(addCacheBuster(`
+        // Fetch products on sale using no-cache fetch
+        const products = await fetchWithNoCache(`
           *[_type == "product" && onSale == true] {
             _id,
             name,
@@ -68,15 +88,17 @@ export default function OnSaleSection() {
             salePrice,
             image
           }
-        `));
+        `);
         
-        // Fetch closeout items with cache buster
-        const closeouts = await client.fetch(addCacheBuster(`
+        // Fetch closeout items using no-cache fetch
+        const closeouts = await fetchWithNoCache(`
           *[_type == "closeoutItem" && active == true] {
             _id,
-            title
+            title,
+            discount,
+            image
           }
-        `));
+        `);
         
         // Only update state if component is still mounted
         if (isMounted) {
@@ -87,7 +109,7 @@ export default function OnSaleSection() {
           
           // If we have closeout items from Sanity, use them, otherwise keep using fallback data
           if (closeouts && closeouts.length > 0) {
-            setCloseoutItems(closeouts.map(item => item.title));
+            setCloseoutItems(closeouts);
           }
           
           // Set loading to false after a minimum delay of 1000ms to prevent flickering
@@ -208,23 +230,43 @@ export default function OnSaleSection() {
             <h3 className="text-xl font-semibold mb-6 text-black">Closeout Items</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="relative w-full h-64 rounded-md overflow-hidden">
-                <Image 
-                  src="/images/products/garden-tools.png"
-                  alt="Garden Tools on Sale"
-                  fill
-                  className="object-cover"
-                />
+                {closeoutItems.length > 0 && closeoutItems[0].image ? (
+                  <Image 
+                    src={urlForImage(closeoutItems[0].image).width(400).height(300).url()}
+                    alt="Closeout Items"
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <Image 
+                    src="/images/products/garden-tools.png"
+                    alt="Garden Tools on Sale"
+                    fill
+                    className="object-cover"
+                  />
+                )}
                 <div className="absolute inset-0 bg-primary/40 flex items-center justify-center">
                   <span className="text-white font-bold text-xl">Closeout Sale</span>
                 </div>
               </div>
               <ul className="grid grid-cols-1 gap-4">
-                {closeoutItems.map((item, index) => (
-                  <li key={index} className="flex items-center bg-background-alternate p-3 rounded-lg">
-                    <span className="w-3 h-3 bg-primary rounded-full mr-3 flex-shrink-0"></span>
-                    <span className="text-black font-medium">{item}</span>
-                  </li>
-                ))}
+                {Array.isArray(closeoutItems) && closeoutItems.some(item => typeof item === 'object') ? (
+                  // Handle Sanity data structure
+                  closeoutItems.map((item) => (
+                    <li key={item._id} className="flex items-center bg-background-alternate p-3 rounded-lg">
+                      <span className="w-3 h-3 bg-primary rounded-full mr-3 flex-shrink-0"></span>
+                      <span className="text-black font-medium">{item.title} {item.discount ? `- ${item.discount}` : ''}</span>
+                    </li>
+                  ))
+                ) : (
+                  // Handle fallback string array
+                  closeoutItems.map((item, index) => (
+                    <li key={index} className="flex items-center bg-background-alternate p-3 rounded-lg">
+                      <span className="w-3 h-3 bg-primary rounded-full mr-3 flex-shrink-0"></span>
+                      <span className="text-black font-medium">{item}</span>
+                    </li>
+                  ))
+                )}
               </ul>
             </div>
             
