@@ -1,5 +1,4 @@
 // deskStructure.js
-import {orderableDocumentListDeskItem} from '@sanity/orderable-document-list'
 
 export const structure = (S) =>
   S.list()
@@ -51,14 +50,8 @@ export const structure = (S) =>
         ),
       
       // Social Media
-      orderableDocumentListDeskItem({
-        type: 'socialLink',
-        title: 'Social Media Links',
-        S,
-        context: (documentId) => ({
-          deskItemId: documentId
-        }),
-      }),
+      S.documentTypeListItem('socialLink')
+        .title('Social Media Links'),
       
       // Show remaining types
       ...S.documentTypeListItems().filter(
