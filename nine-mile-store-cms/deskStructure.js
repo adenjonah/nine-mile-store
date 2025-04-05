@@ -8,7 +8,6 @@ export const structure = (S) =>
       S.documentTypeListItem('product'),
       S.documentTypeListItem('service'),
       S.documentTypeListItem('landscapingService'),
-      S.documentTypeListItem('closeoutItem'),
       S.documentTypeListItem('siteImage'),
       S.documentTypeListItem('socialLink'),
       
