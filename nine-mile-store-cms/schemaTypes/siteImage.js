@@ -31,7 +31,7 @@ export default {
           {title: 'Hero', value: 'hero'},
           {title: 'Staff', value: 'staff'},
           {title: 'Community', value: 'community'},
-          {title: 'Interior', value: 'interior'},
+          {title: 'Blurb Photo', value: 'blurbPhoto'},
           {title: 'Other', value: 'other'},
         ]
       }
