@@ -90,7 +90,7 @@ export function StoreDataProvider({ children }) {
 
         // Process images by category
         const heroImage = data.images?.find(img => img.category === 'hero') || null;
-        const blurbPhotos = data.images?.filter(img => img.category === 'blurbPhoto') || [];
+        const blurbPhotos = data.images?.filter(img => img.category === 'interior') || [];
         const staffImages = data.images?.filter(img => img.category === 'staff') || [];
         const communityImages = data.images?.filter(img => img.category === 'community') || [];
         const logo = data.images?.find(img => img.category === 'logo') || null;

@@ -73,7 +73,7 @@ function getCategoryDisplayName(category) {
   const displayNames = {
     'hero': 'Hero Image',
     'logo': 'Logo',
-    'blurbPhoto': 'Blurb Photos',
+    'interior': 'Interior',
     'staff': 'Staff Images',
     'community': 'Community Images',
     'other': 'Other Images'

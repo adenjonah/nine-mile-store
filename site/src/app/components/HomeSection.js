@@ -80,7 +80,7 @@ export default function HomeSection() {
                 <EmptyContentGuide 
                   contentType="Blurb Photo" 
                   schemaType="siteImage" 
-                  category="blurbPhoto" 
+                  category="interior" 
                   className="h-full flex flex-col justify-center"
                 />
               )}

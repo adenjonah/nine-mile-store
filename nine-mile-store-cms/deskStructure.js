@@ -65,11 +65,11 @@ export const structure = (S) =>
                     .filter('_type == "siteImage" && category == "hero"')
                 ),
               S.listItem()
-                .title('Blurb Photos')
+                .title('Interior Images')
                 .child(
                   S.documentTypeList('siteImage')
-                    .title('Blurb Photos')
-                    .filter('_type == "siteImage" && category == "blurbPhoto"')
+                    .title('Interior Images')
+                    .filter('_type == "siteImage" && category == "interior"')
                 ),
               S.listItem()
                 .title('Staff Images')
