@@ -1,6 +1,7 @@
 import product from './product'
 import service from './service'
 import landscapingService from './landscapingService'
+import serviceCategory from './serviceCategory'
 import siteImage from './siteImage'
 import storeHours from './storeHours'
 import storeInfo from './storeInfo'
@@ -12,6 +13,7 @@ export const schemaTypes = [
   product,
   service,
   landscapingService,
+  serviceCategory,
   siteImage,
   storeHours,
   storeInfo,

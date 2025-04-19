@@ -1,6 +1,32 @@
 // deskStructure.js
 
-export const structure = (S) =>
+import {
+  FaStore,
+  FaImages,
+  FaBoxes,
+  FaTools,
+  FaLeaf,
+  FaTag,
+  FaClock,
+  FaShareAlt
+} from 'react-icons/fa'
+
+// List all document types
+const hiddenDocTypes = listItem => 
+  ![
+    'storeInfo', 
+    'siteImage', 
+    'service', 
+    'landscapingService', 
+    'product', 
+    'closeoutItem', 
+    'storeHours', 
+    'socialLink',
+    'serviceCategory'
+  ].includes(listItem.getId())
+
+// Build the structure
+export default () => 
   S.list()
     .title('Content')
     .items([
@@ -8,7 +34,67 @@ export const structure = (S) =>
       S.documentTypeListItem('product'),
       S.documentTypeListItem('service'),
       S.documentTypeListItem('landscapingService'),
-      S.documentTypeListItem('siteImage'),
+      S.documentTypeListItem('serviceCategory'),
+      
+      // Site Images with categories
+      S.listItem()
+        .title('Site Images')
+        .icon(FaImages)
+        .child(
+          S.list()
+            .title('Site Images')
+            .items([
+              S.listItem()
+                .title('All Images')
+                .child(
+                  S.documentTypeList('siteImage')
+                    .title('All Images')
+                ),
+              S.listItem()
+                .title('Logo')
+                .child(
+                  S.documentTypeList('siteImage')
+                    .title('Logo')
+                    .filter('_type == "siteImage" && category == "logo"')
+                ),
+              S.listItem()
+                .title('Hero Image')
+                .child(
+                  S.documentTypeList('siteImage')
+                    .title('Hero Image')
+                    .filter('_type == "siteImage" && category == "hero"')
+                ),
+              S.listItem()
+                .title('Blurb Photos')
+                .child(
+                  S.documentTypeList('siteImage')
+                    .title('Blurb Photos')
+                    .filter('_type == "siteImage" && category == "blurbPhoto"')
+                ),
+              S.listItem()
+                .title('Staff Images')
+                .child(
+                  S.documentTypeList('siteImage')
+                    .title('Staff Images')
+                    .filter('_type == "siteImage" && category == "staff"')
+                ),
+              S.listItem()
+                .title('Community Images')
+                .child(
+                  S.documentTypeList('siteImage')
+                    .title('Community Images')
+                    .filter('_type == "siteImage" && category == "community"')
+                ),
+              S.listItem()
+                .title('Other Images')
+                .child(
+                  S.documentTypeList('siteImage')
+                    .title('Other Images')
+                    .filter('_type == "siteImage" && category == "other"')
+                ),
+            ])
+        ),
+      
       S.documentTypeListItem('socialLink'),
       
       // Singleton document types
@@ -35,5 +121,17 @@ export const structure = (S) =>
             .id('favicon')
             .schemaType('favicon')
             .documentId('favicon')
-        )
+        ),
+      
+      // Social Links
+      S.listItem()
+        .title('Social Links')
+        .icon(FaShareAlt)
+        .child(
+          S.documentTypeList('socialLink')
+            .title('Social Links')
+        ),
+      
+      // Filter out the rest
+      ...S.documentTypeListItems().filter(hiddenDocTypes)
     ]) 

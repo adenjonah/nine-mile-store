@@ -5,7 +5,13 @@ import { useStoreData } from '../../lib/StoreDataContext';
 import { urlForImage } from '../../lib/sanity-image';
 
 export default function ServicesSection() {
-  const { services, landscapingServices, loading } = useStoreData();
+  const { services, landscapingServices, serviceCategories, loading } = useStoreData();
+  
+  // Find the landscaping category if it exists
+  const landscapingCategory = serviceCategories.find(
+    category => category.slug?.current === 'landscaping' || 
+    category.title.toLowerCase().includes('landscaping')
+  );
   
   return (
     <section id="services" className="py-12 bg-background">
@@ -83,15 +89,25 @@ export default function ServicesSection() {
                 <h3 className="text-xl font-semibold mb-6 text-black">Landscaping Services</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="relative w-full h-64 rounded-md overflow-hidden">
-                    <Image 
-                      src="/images/services/landscaping.png"
-                      alt="Landscaping Services"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-primary/40 flex items-center justify-center">
-                      <span className="text-white font-bold text-xl">Professional Landscaping</span>
-                    </div>
+                    {landscapingCategory?.image ? (
+                      <>
+                        <Image 
+                          src={urlForImage(landscapingCategory.image).width(600).height(400).url()}
+                          alt={landscapingCategory.title || "Landscaping Services"}
+                          fill
+                          className="object-cover"
+                        />
+                        <div className="absolute inset-0 bg-primary/40 flex items-center justify-center">
+                          <span className="text-white font-bold text-xl">
+                            {landscapingCategory.overlayText || "Professional Landscaping"}
+                          </span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="w-full h-full bg-primary flex items-center justify-center">
+                        <span className="text-white font-bold text-xl">Professional Landscaping</span>
+                      </div>
+                    )}
                   </div>
                   <div>
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -12,6 +12,7 @@ export function StoreDataProvider({ children }) {
     storeHours: {},
     services: [],
     landscapingServices: [],
+    serviceCategories: [],
     saleItems: [],
     heroImage: null,
     blurbPhotos: [],
@@ -50,6 +51,14 @@ export function StoreDataProvider({ children }) {
             title,
             highlighted
           } | order(highlighted desc),
+          "serviceCategories": *[_type == "serviceCategory"] {
+            _id,
+            title,
+            slug,
+            description,
+            image,
+            overlayText
+          },
           "saleItems": *[_type == "product" && onSale == true] {
             _id,
             name,
@@ -91,6 +100,7 @@ export function StoreDataProvider({ children }) {
           storeHours: data.storeHours || {},
           services: data.services || [],
           landscapingServices: processedLandscapingServices,
+          serviceCategories: data.serviceCategories || [],
           saleItems: data.saleItems || [],
           heroImage,
           blurbPhotos,
