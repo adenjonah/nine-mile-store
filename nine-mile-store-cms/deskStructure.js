@@ -26,7 +26,7 @@ const hiddenDocTypes = listItem =>
   ].includes(listItem.getId())
 
 // Build the structure
-export default () => 
+export const structure = (S) =>
   S.list()
     .title('Content')
     .items([
