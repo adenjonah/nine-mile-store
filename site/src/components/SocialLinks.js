@@ -36,6 +36,7 @@ const socialIcons = {
 export default function SocialLinks({ className = "", hoverClass = "hover:text-primary" }) {
   const { socialLinks } = useStoreData();
 
+  // We'll handle empty states in parent components using EmptyContentGuide
   if (!socialLinks || socialLinks.length === 0) {
     return null;
   }

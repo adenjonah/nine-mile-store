@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useStoreData } from '../../lib/StoreDataContext';
 import { urlForImage } from '../../lib/sanity-image';
+import EmptyContentGuide from '../../components/EmptyContentGuide';
 
 export default function ServicesSection() {
   const { services, landscapingServices, serviceCategories, loading } = useStoreData();
@@ -78,8 +79,17 @@ export default function ServicesSection() {
                 ))}
               </div>
             ) : (
-              <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md mb-16 text-center">
-                <p className="text-black text-lg">No services data available. Please check back later.</p>
+              <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md mb-16">
+                <EmptyContentGuide 
+                  contentType="Services" 
+                  schemaType="service" 
+                  className="max-w-xl mx-auto"
+                />
+                <div className="text-center mt-4">
+                  <p className="text-gray-500 text-sm">
+                    Services show up here after you add them in the CMS. You can add images and descriptions.
+                  </p>
+                </div>
               </div>
             )}
             
@@ -129,8 +139,17 @@ export default function ServicesSection() {
                 </div>
               </div>
             ) : (
-              <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md text-center">
-                <p className="text-black text-lg">No landscaping services data available. Please check back later.</p>
+              <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md">
+                <EmptyContentGuide 
+                  contentType="Landscaping Services" 
+                  schemaType="landscapingService" 
+                  className="max-w-xl mx-auto"
+                />
+                <div className="text-center mt-4">
+                  <p className="text-gray-500 text-sm">
+                    To add landscaping services, create &quot;landscapingService&quot; documents in the CMS.
+                  </p>
+                </div>
               </div>
             )}
           </>

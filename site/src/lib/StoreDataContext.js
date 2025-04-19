@@ -3,6 +3,9 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { client } from './sanity';
 
+// Debug flag - set to true to simulate missing data for testing UI feedback
+const DEBUG_EMPTY_DATA = false;
+
 // Create a context for store data
 const StoreDataContext = createContext(null);
 
@@ -95,23 +98,44 @@ export function StoreDataProvider({ children }) {
         // Process landscaping services to match expected format in components
         const processedLandscapingServices = data.landscapingServices?.map(item => item.title) || [];
 
-        setStoreData({
-          storeInfo: data.storeInfo || {},
-          storeHours: data.storeHours || {},
-          services: data.services || [],
-          landscapingServices: processedLandscapingServices,
-          serviceCategories: data.serviceCategories || [],
-          saleItems: data.saleItems || [],
-          heroImage,
-          blurbPhotos,
-          staffImages,
-          communityImages,
-          logo,
-          socialLinks: data.socialLinks || [],
-          favicon: data.siteSettings?.favicon || null,
-          appleTouchIcon: data.siteSettings?.appleTouchIcon || null,
-          loading: false
-        });
+        // If debug mode is active, simulate missing data for testing UI feedback
+        if (DEBUG_EMPTY_DATA) {
+          setStoreData({
+            storeInfo: {},
+            storeHours: {},
+            services: [],
+            landscapingServices: [],
+            serviceCategories: [],
+            saleItems: [],
+            heroImage: null,
+            blurbPhotos: [],
+            staffImages: [],
+            communityImages: [],
+            logo: null,
+            socialLinks: [],
+            favicon: null,
+            appleTouchIcon: null,
+            loading: false
+          });
+        } else {
+          setStoreData({
+            storeInfo: data.storeInfo || {},
+            storeHours: data.storeHours || {},
+            services: data.services || [],
+            landscapingServices: processedLandscapingServices,
+            serviceCategories: data.serviceCategories || [],
+            saleItems: data.saleItems || [],
+            heroImage,
+            blurbPhotos,
+            staffImages,
+            communityImages,
+            logo,
+            socialLinks: data.socialLinks || [],
+            favicon: data.siteSettings?.favicon || null,
+            appleTouchIcon: data.siteSettings?.appleTouchIcon || null,
+            loading: false
+          });
+        }
       } catch (error) {
         console.error('Error fetching store data:', error);
         // Set loading to false even on error to allow components to render fallback states

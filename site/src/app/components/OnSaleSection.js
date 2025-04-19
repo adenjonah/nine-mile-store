@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useStoreData } from '../../lib/StoreDataContext';
 import { urlForImage } from '../../lib/sanity-image';
+import EmptyContentGuide from '../../components/EmptyContentGuide';
 
 export default function OnSaleSection() {
   const { saleItems, loading } = useStoreData();
@@ -73,8 +74,17 @@ export default function OnSaleSection() {
               ))}
             </div>
           ) : (
-            <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md text-center">
-              <p className="text-black text-lg">No sale items available. Please check back later.</p>
+            <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md">
+              <EmptyContentGuide 
+                contentType="On Sale Items" 
+                schemaType="product" 
+                className="max-w-xl mx-auto"
+              />
+              <div className="text-center mt-4">
+                <p className="text-gray-500 text-sm">
+                  To add items on sale, create a &quot;product&quot; document and set the &quot;On Sale&quot; field to &quot;Yes&quot;.
+                </p>
+              </div>
             </div>
           )
         )}

@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useStoreData } from '../../lib/StoreDataContext';
 import { urlForImage } from '../../lib/sanity-image';
+import EmptyContentGuide from '../../components/EmptyContentGuide';
 
 export default function HomeSection() {
   const { heroImage, blurbPhotos, loading } = useStoreData();
@@ -34,7 +35,14 @@ export default function HomeSection() {
             <div className="bg-background-alternate flex flex-col items-center justify-center text-center p-6 h-full">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-4">Nine Mile Hardware</h1>
               <p className="text-xl md:text-2xl text-black max-w-3xl">Your local hardware store for all your home and garden needs.</p>
-              <p className="mt-8 text-gray-500">Hero image not available</p>
+              
+              <div className="mt-8 max-w-md">
+                <EmptyContentGuide 
+                  contentType="Hero Image" 
+                  schemaType="siteImage" 
+                  category="hero" 
+                />
+              </div>
             </div>
           )}
         </div>
@@ -69,9 +77,12 @@ export default function HomeSection() {
                   />
                 </div>
               ) : (
-                <div className="w-full h-full bg-background-alternate flex items-center justify-center rounded-lg">
-                  <span className="text-gray-500">No blurb photos available</span>
-                </div>
+                <EmptyContentGuide 
+                  contentType="Blurb Photo" 
+                  schemaType="siteImage" 
+                  category="blurbPhoto" 
+                  className="h-full flex flex-col justify-center"
+                />
               )}
             </div>
           </div>

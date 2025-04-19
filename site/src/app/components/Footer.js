@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { useStoreData } from '../../lib/StoreDataContext';
 import SocialLinks from '../../components/SocialLinks';
+import EmptyContentGuide from '../../components/EmptyContentGuide';
 
 export default function Footer() {
-  const { storeInfo, storeHours } = useStoreData();
+  const { storeInfo, storeHours, socialLinks } = useStoreData();
   const currentYear = new Date().getFullYear();
   
   return (
@@ -21,13 +22,29 @@ export default function Footer() {
                   <p className="mt-3">Phone: {storeInfo.phone || 'Not available'}</p>
                 </>
               ) : (
-                <p>Contact information not available</p>
+                <div className="max-w-xs">
+                  <EmptyContentGuide 
+                    contentType="Store Information" 
+                    schemaType="storeInfo" 
+                    className="bg-transparent border-primary-light/20 text-background-light/90"
+                  />
+                </div>
               )}
             </address>
             
             {/* Social Media Links */}
             <div className="mt-5">
-              <SocialLinks hoverClass="hover:text-background-light" />
+              {socialLinks && socialLinks.length > 0 ? (
+                <SocialLinks hoverClass="hover:text-background-light" />
+              ) : (
+                <div className="max-w-xs">
+                  <EmptyContentGuide 
+                    contentType="Social Links" 
+                    schemaType="socialLink" 
+                    className="bg-transparent border-primary-light/20 text-background-light/90"
+                  />
+                </div>
+              )}
             </div>
           </div>
           
@@ -66,7 +83,13 @@ export default function Footer() {
                 </p>
               </div>
             ) : (
-              <p className="text-background-light/90">Business hours not available</p>
+              <div className="max-w-xs">
+                <EmptyContentGuide 
+                  contentType="Store Hours" 
+                  schemaType="storeHours" 
+                  className="bg-transparent border-primary-light/20 text-background-light/90"
+                />
+              </div>
             )}
           </div>
         </div>
