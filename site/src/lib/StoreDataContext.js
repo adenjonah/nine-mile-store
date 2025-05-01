@@ -68,8 +68,9 @@ export function StoreDataProvider({ children }) {
             description,
             regularPrice,
             salePrice,
-            image
-          },
+            image,
+            orderRank
+          } | order(orderRank asc),
           "images": *[_type == "siteImage"] {
             _id,
             title,

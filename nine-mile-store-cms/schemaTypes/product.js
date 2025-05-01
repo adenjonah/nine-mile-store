@@ -36,6 +36,13 @@ export default {
       type: 'boolean',
       title: 'Currently On Sale',
       initialValue: false
+    },
+    {
+      name: 'orderRank',
+      title: 'Display Order',
+      type: 'number',
+      description: 'Order in which to display this product (lower numbers first)',
+      validation: Rule => Rule.min(0)
     }
   ]
 } 
