@@ -17,7 +17,6 @@ const hiddenDocTypes = listItem =>
     'storeInfo', 
     'siteImage', 
     'service', 
-    'landscapingService', 
     'product', 
     'closeoutItem', 
     'storeHours', 
@@ -33,7 +32,6 @@ export const structure = (S) =>
       // Regular document types
       S.documentTypeListItem('product'),
       S.documentTypeListItem('service'),
-      S.documentTypeListItem('landscapingService'),
       S.documentTypeListItem('serviceCategory'),
       
       // Site Images with categories
@@ -70,20 +68,6 @@ export const structure = (S) =>
                   S.documentTypeList('siteImage')
                     .title('Interior Images')
                     .filter('_type == "siteImage" && category == "interior"')
-                ),
-              S.listItem()
-                .title('Staff Images')
-                .child(
-                  S.documentTypeList('siteImage')
-                    .title('Staff Images')
-                    .filter('_type == "siteImage" && category == "staff"')
-                ),
-              S.listItem()
-                .title('Community Images')
-                .child(
-                  S.documentTypeList('siteImage')
-                    .title('Community Images')
-                    .filter('_type == "siteImage" && category == "community"')
                 ),
               S.listItem()
                 .title('Other Images')

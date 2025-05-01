@@ -6,7 +6,15 @@ import { useStoreData } from '../../lib/StoreDataContext';
 import SocialLinks from '../../components/SocialLinks';
 
 export default function FooterSection() {
-  const { storeInfo, storeHours, loading } = useStoreData();
+  const { storeInfo, storeHours: originalStoreHours, loading } = useStoreData();
+  
+  // Override the store hours with corrected values
+  const storeHours = {
+    ...originalStoreHours,
+    monday: "7:00 AM - 6:00 PM",
+    tuesday: "7:00 AM - 6:00 PM"
+  };
+  
   const currentYear = new Date().getFullYear();
   
   return (

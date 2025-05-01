@@ -61,7 +61,6 @@ function getSchemaDisplayName(schemaType) {
     'storeHours': 'Store Hours',
     'product': 'Products',
     'service': 'Services',
-    'landscapingService': 'Landscaping Services',
     'socialLink': 'Social Links'
   };
   

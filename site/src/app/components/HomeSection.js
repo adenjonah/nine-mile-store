@@ -48,7 +48,7 @@ export default function HomeSection() {
         </div>
         
         {/* Family-Owned Business Section */}
-        <div className="bg-white rounded-lg p-8 shadow-theme-md mb-12">
+        <div className="bg-white rounded-lg p-8 shadow-theme-md mb-12 max-w-5xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-6 text-black">Family-Owned Business</h2>
           <div className="grid md:grid-cols-2 gap-8">
             <div>
@@ -64,25 +64,28 @@ export default function HomeSection() {
             </div>
             
             {/* Blurb Photo */}
-            <div className="h-full">
+            <div className="h-full flex items-center justify-center">
               {loading ? (
-                <div className="w-full h-full bg-gray-200 animate-pulse rounded-lg"></div>
+                <div className="w-3/4 h-80 md:h-96 bg-gray-200 animate-pulse rounded-lg"></div>
               ) : blurbPhotos.length > 0 ? (
-                <div className="relative w-full h-full rounded-lg overflow-hidden">
+                <div className="relative w-3/4 h-80 md:h-96 rounded-lg overflow-hidden">
                   <Image 
-                    src={urlForImage(blurbPhotos[0].image).width(600).height(400).url()}
+                    src={urlForImage(blurbPhotos[0].image).width(900).height(600).url()}
                     alt={blurbPhotos[0].title || "Store Photo"}
                     fill
-                    className="object-cover"
+                    sizes="(max-width: 768px) 75vw, 33vw"
+                    className="object-contain"
                   />
                 </div>
               ) : (
-                <EmptyContentGuide 
-                  contentType="Blurb Photo" 
-                  schemaType="siteImage" 
-                  category="blurbPhoto" 
-                  className="h-full flex flex-col justify-center"
-                />
+                <div className="w-3/4 h-80 md:h-96">
+                  <EmptyContentGuide 
+                    contentType="Blurb Photo" 
+                    schemaType="siteImage" 
+                    category="blurbPhoto" 
+                    className="h-full flex flex-col justify-center"
+                  />
+                </div>
               )}
             </div>
           </div>

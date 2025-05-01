@@ -29,8 +29,6 @@ export default {
         list: [
           {title: 'Logo', value: 'logo'},
           {title: 'Hero', value: 'hero'},
-          {title: 'Staff', value: 'staff'},
-          {title: 'Community', value: 'community'},
           {title: 'Blurb Photo', value: 'blurbPhoto'},
           {title: 'Other', value: 'other'},
         ]

@@ -5,7 +5,14 @@ import { useStoreData } from '../../lib/StoreDataContext';
 import { urlForImage } from '../../lib/sanity-image';
 
 export default function AboutSection() {
-  const { storeHours, storeInfo, staffImages, communityImages, loading } = useStoreData();
+  const { storeHours: originalStoreHours, storeInfo, loading } = useStoreData();
+  
+  // Override the store hours with corrected values
+  const storeHours = {
+    ...originalStoreHours,
+    monday: "7:00 AM - 6:00 PM",
+    tuesday: "7:00 AM - 6:00 PM"
+  };
   
   return (
     <section id="about" className="py-12 bg-background">
@@ -40,21 +47,6 @@ export default function AboutSection() {
                 ) : (
                   <p className="text-black mb-6">No contact information available. Please check back later.</p>
                 )}
-                
-                <div className="relative w-full h-48 rounded-md overflow-hidden">
-                  {staffImages.length > 0 ? (
-                    <Image 
-                      src={urlForImage(staffImages[0].image).width(400).height(300).url()}
-                      alt={staffImages[0].title || "Store Staff"}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-background-alternate flex items-center justify-center">
-                      <span className="text-gray-500">No staff image available</span>
-                    </div>
-                  )}
-                </div>
               </div>
               
               <div className="bg-white p-8 rounded-lg shadow-theme-md">
@@ -82,48 +74,26 @@ export default function AboutSection() {
               </div>
             </div>
             
-            {/* Community Section */}
+            {/* Community Information */}
             <div className="bg-white p-8 rounded-lg shadow-theme-md">
               <h3 className="text-2xl font-bold mb-8 text-black text-center">Community Involvement</h3>
               
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  {storeInfo.communityText ? (
-                    <>
-                      <p className="text-black mb-4">
-                        {storeInfo.communityText}
-                      </p>
-                      <p className="text-black mb-4">
-                        Our team members are active in the Nine Mile Falls community, and we&apos;re proud to support local schools, youth sports teams, and community initiatives.
-                      </p>
-                      <p className="text-black">
-                        Stop by the store to learn more about our upcoming community events and how you can get involved!
-                      </p>
-                    </>
-                  ) : (
-                    <p className="text-black">No community information available. Please check back later.</p>
-                  )}
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  {communityImages.length > 0 ? (
-                    // Display Sanity images
-                    communityImages.map((item, index) => (
-                      <div key={item._id} className="relative rounded-lg overflow-hidden h-40">
-                        <Image 
-                          src={urlForImage(item.image).width(300).height(200).url()}
-                          alt={item.title || `Community Event ${index + 1}`}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ))
-                  ) : (
-                    <div className="col-span-2 flex items-center justify-center h-40 bg-background-alternate rounded-lg">
-                      <p className="text-black">No community images available</p>
-                    </div>
-                  )}
-                </div>
+              <div>
+                {storeInfo.communityText ? (
+                  <>
+                    <p className="text-black mb-4">
+                      {storeInfo.communityText}
+                    </p>
+                    <p className="text-black mb-4">
+                      Our team members are active in the Nine Mile Falls community, and we&apos;re proud to support local schools, youth sports teams, and community initiatives.
+                    </p>
+                    <p className="text-black">
+                      Stop by the store to learn more about our upcoming community events and how you can get involved!
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-black">No community information available. Please check back later.</p>
+                )}
               </div>
             </div>
           </>

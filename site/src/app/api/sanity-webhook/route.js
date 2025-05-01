@@ -56,7 +56,6 @@ function getPathsToRevalidate(body) {
         paths.push('/#on-sale');
         break;
       case 'service':
-      case 'landscapingService':
         paths.push('/#services');
         break;
       case 'closeoutItem':

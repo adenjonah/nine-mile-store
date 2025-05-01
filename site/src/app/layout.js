@@ -10,7 +10,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Nine Mile Hardware | Family-Owned Hardware Store",
-  description: "Nine Mile Hardware in Nine Mile Falls, WA. Tools, landscaping services, home improvement, paint, and more. Family-owned hardware store serving the local community.",
+  description: "Nine Mile Hardware in Nine Mile Falls, WA. Tools, home improvement, paint, and more. Family-owned hardware store serving the local community.",
   manifest: "/site.webmanifest",
   themeColor: "#ffffff",
   icons: {

@@ -6,13 +6,20 @@ import { urlForImage } from '../../lib/sanity-image';
 import EmptyContentGuide from '../../components/EmptyContentGuide';
 
 export default function ServicesSection() {
-  const { services, landscapingServices, serviceCategories, loading } = useStoreData();
+  const { services, loading } = useStoreData();
   
-  // Find the landscaping category if it exists
-  const landscapingCategory = serviceCategories.find(
-    category => category.slug?.current === 'landscaping' || 
-    category.title.toLowerCase().includes('landscaping')
-  );
+  // Determine grid classes based on number of services
+  const getGridClasses = () => {
+    if (services.length === 1) {
+      return 'grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 max-w-md mx-auto';
+    } else if (services.length === 2) {
+      return 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 max-w-3xl mx-auto';
+    } else if (services.length === 3) {
+      return 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto';
+    } else {
+      return 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4';
+    }
+  };
   
   return (
     <section id="services" className="py-12 bg-background">
@@ -35,23 +42,11 @@ export default function ServicesSection() {
                 </div>
               ))}
             </div>
-            
-            <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md animate-pulse">
-              <div className="h-7 bg-gray-200 rounded w-1/4 mb-6"></div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="h-64 bg-gray-200 rounded-md"></div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {[1, 2, 3, 4, 5, 6].map((item) => (
-                    <div key={item} className="h-12 bg-gray-200 rounded-lg"></div>
-                  ))}
-                </div>
-              </div>
-            </div>
           </div>
         ) : (
           <>
             {services.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+              <div className={`${getGridClasses()} gap-6`}>
                 {services.map((service) => (
                   <div 
                     key={service._id} 
@@ -79,7 +74,7 @@ export default function ServicesSection() {
                 ))}
               </div>
             ) : (
-              <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md mb-16">
+              <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md">
                 <EmptyContentGuide 
                   contentType="Services" 
                   schemaType="service" 
@@ -88,66 +83,6 @@ export default function ServicesSection() {
                 <div className="text-center mt-4">
                   <p className="text-gray-500 text-sm">
                     Services show up here after you add them in the CMS. You can add images and descriptions.
-                  </p>
-                </div>
-              </div>
-            )}
-            
-            {/* Landscaping Services */}
-            {landscapingServices.length > 0 ? (
-              <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md">
-                <h3 className="text-xl font-semibold mb-6 text-black">Landscaping Services</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="relative w-full h-64 rounded-md overflow-hidden">
-                    {landscapingCategory?.image ? (
-                      <>
-                        <Image 
-                          src={urlForImage(landscapingCategory.image).width(600).height(400).url()}
-                          alt={landscapingCategory.title || "Landscaping Services"}
-                          fill
-                          className="object-cover"
-                        />
-                        <div className="absolute inset-0 bg-primary/40 flex items-center justify-center">
-                          <span className="text-white font-bold text-xl">
-                            {landscapingCategory.overlayText || "Professional Landscaping"}
-                          </span>
-                        </div>
-                      </>
-                    ) : (
-                      <div className="w-full h-full bg-primary flex items-center justify-center">
-                        <span className="text-white font-bold text-xl">Professional Landscaping</span>
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {landscapingServices.map((service, index) => (
-                        <li key={index} className="flex items-center bg-background-alternate p-3 rounded-lg">
-                          <span className="w-3 h-3 bg-primary rounded-full mr-3 flex-shrink-0"></span>
-                          <span className="text-black font-medium">{service}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-                
-                <div className="mt-8 p-4 border-t border-gray-200">
-                  <p className="text-black text-center">
-                    Contact us for a free estimate on any of our landscaping services. 
-                    We service residential and commercial properties in the local area.
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-theme-md">
-                <EmptyContentGuide 
-                  contentType="Landscaping Services" 
-                  schemaType="landscapingService" 
-                  className="max-w-xl mx-auto"
-                />
-                <div className="text-center mt-4">
-                  <p className="text-gray-500 text-sm">
-                    To add landscaping services, create &quot;landscapingService&quot; documents in the CMS.
                   </p>
                 </div>
               </div>

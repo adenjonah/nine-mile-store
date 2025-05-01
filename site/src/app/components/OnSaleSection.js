@@ -67,8 +67,12 @@ export default function OnSaleSection() {
                   <h3 className="text-lg font-semibold mb-2 text-black">{item.name}</h3>
                   <p className="text-black mb-4">{item.description}</p>
                   <div className="flex items-center mt-auto">
-                    <span className="text-gray-500 line-through mr-3">{item.regularPrice}</span>
-                    <span className="text-white bg-primary px-3 py-1 rounded-full font-bold text-md">{item.salePrice}</span>
+                    {item.regularPrice && (
+                      <span className="text-gray-500 line-through mr-3">{item.regularPrice}</span>
+                    )}
+                    {item.salePrice && (
+                      <span className="text-white bg-primary px-3 py-1 rounded-full font-bold text-md">{item.salePrice}</span>
+                    )}
                   </div>
                 </div>
               ))}

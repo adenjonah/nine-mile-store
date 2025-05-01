@@ -14,13 +14,10 @@ export function StoreDataProvider({ children }) {
     storeInfo: {},
     storeHours: {},
     services: [],
-    landscapingServices: [],
     serviceCategories: [],
     saleItems: [],
     heroImage: null,
     blurbPhotos: [],
-    staffImages: [],
-    communityImages: [],
     logo: null,
     socialLinks: [],
     favicon: null,
@@ -28,11 +25,14 @@ export function StoreDataProvider({ children }) {
     loading: true
   });
 
+  // Force update when component mounts and disable caching
+  const [forceUpdate, setForceUpdate] = useState(0);
+
   useEffect(() => {
     async function fetchAllData() {
       try {
-        // Use a single GROQ query to fetch multiple document types in parallel
-        const data = await client.fetch(`{
+        // Use fresh query with cache disabled
+        const query = `{
           "storeInfo": *[_type == "storeInfo"][0] {
             storeName,
             phone,
@@ -41,7 +41,19 @@ export function StoreDataProvider({ children }) {
             city,
             communityText
           },
-          "storeHours": *[_type == "storeHours"][0],
+          "storeHours": *[_type == "storeHours"][0] {
+            _id,
+            _createdAt,
+            _updatedAt,
+            title,
+            monday,
+            tuesday,
+            wednesday,
+            thursday,
+            friday,
+            saturday,
+            sunday
+          },
           "services": *[_type == "service"] {
             _id,
             title,
@@ -49,11 +61,6 @@ export function StoreDataProvider({ children }) {
             image,
             featured
           },
-          "landscapingServices": *[_type == "landscapingService"] {
-            _id,
-            title,
-            highlighted
-          } | order(highlighted desc),
           "serviceCategories": *[_type == "serviceCategory"] {
             _id,
             title,
@@ -87,17 +94,21 @@ export function StoreDataProvider({ children }) {
             favicon,
             appleTouchIcon
           }
-        }`);
+        }`;
+
+        // Use no-cache to ensure fresh data
+        const data = await client.fetch(query, {}, {
+          cache: 'no-store',
+          next: { revalidate: 0 }
+        });
+
+        console.log('Fetched store hours (updated):', data.storeHours);
+        console.log('Store hours Monday:', data.storeHours?.monday);
 
         // Process images by category
         const heroImage = data.images?.find(img => img.category === 'hero') || null;
         const blurbPhotos = data.images?.filter(img => img.category === 'interior') || [];
-        const staffImages = data.images?.filter(img => img.category === 'staff') || [];
-        const communityImages = data.images?.filter(img => img.category === 'community') || [];
         const logo = data.images?.find(img => img.category === 'logo') || null;
-
-        // Process landscaping services to match expected format in components
-        const processedLandscapingServices = data.landscapingServices?.map(item => item.title) || [];
 
         // If debug mode is active, simulate missing data for testing UI feedback
         if (DEBUG_EMPTY_DATA) {
@@ -105,13 +116,10 @@ export function StoreDataProvider({ children }) {
             storeInfo: {},
             storeHours: {},
             services: [],
-            landscapingServices: [],
             serviceCategories: [],
             saleItems: [],
             heroImage: null,
             blurbPhotos: [],
-            staffImages: [],
-            communityImages: [],
             logo: null,
             socialLinks: [],
             favicon: null,
@@ -123,13 +131,10 @@ export function StoreDataProvider({ children }) {
             storeInfo: data.storeInfo || {},
             storeHours: data.storeHours || {},
             services: data.services || [],
-            landscapingServices: processedLandscapingServices,
             serviceCategories: data.serviceCategories || [],
             saleItems: data.saleItems || [],
             heroImage,
             blurbPhotos,
-            staffImages,
-            communityImages,
             logo,
             socialLinks: data.socialLinks || [],
             favicon: data.siteSettings?.favicon || null,
@@ -146,11 +151,14 @@ export function StoreDataProvider({ children }) {
 
     fetchAllData();
 
-    // Set up a revalidation interval (e.g., every hour)
-    const intervalId = setInterval(fetchAllData, 60 * 60 * 1000);
+    // Set up a revalidation interval (30 seconds)
+    const intervalId = setInterval(() => {
+      fetchAllData();
+      setForceUpdate(prev => prev + 1);
+    }, 30 * 1000);
     
     return () => clearInterval(intervalId);
-  }, []);
+  }, [forceUpdate]);
 
   return (
     <StoreDataContext.Provider value={storeData}>
