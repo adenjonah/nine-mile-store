@@ -103,7 +103,7 @@ export default function FeedbackForm() {
               onSubmit={handleSubmit}
               ref={formRef}
             >
-              {/* FormSubmit configuration */}
+              {/* FormSubmit configuratin */}
               <input type="hidden" name="_subject" value="New Feedback for Nine Mile Store" />
               <input type="hidden" name="_template" value="table" />
               <input type="text" name="_honey" style={{display: 'none'}} />
