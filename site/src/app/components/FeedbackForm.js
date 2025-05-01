@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useRef } from 'react';
 import SuccessMessage from './SuccessMessage';
 
 export default function FeedbackForm() {
@@ -11,6 +11,10 @@ export default function FeedbackForm() {
     feedback: ''
   });
 
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const iframeRef = useRef(null);
+  const formRef = useRef(null);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues(prev => ({
@@ -19,13 +23,41 @@ export default function FeedbackForm() {
     }));
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitted(true);
+    
+    // Submit the form silently using the hidden iframe
+    formRef.current.submit();
+    
+    // Reset form
+    setFormValues({
+      firstName: '',
+      lastName: '',
+      mobile: '',
+      feedback: ''
+    });
+    
+    // Hide success message after 5 seconds
+    setTimeout(() => {
+      setIsSubmitted(false);
+    }, 5000);
+  };
+
   return (
     <section id="contact" className="py-12 bg-background-alternate">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
-          <Suspense fallback={null}>
-            <SuccessMessage />
-          </Suspense>
+          {isSubmitted && (
+            <div className="bg-status-success/10 border border-status-success p-8 rounded-sm text-center mb-8">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-16 h-16 mx-auto text-status-success mb-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+              <h2 className="text-2xl font-serif mb-4 text-text-primary">Thank You!</h2>
+              <p className="text-text-primary mb-4">Your feedback has been submitted successfully.</p>
+              <p className="text-text-primary">We appreciate your input and will use it to improve our store and services.</p>
+            </div>
+          )}
           
           <div className="bg-background-light p-8 border border-primary/10 rounded-sm">
             <h2 className="text-3xl font-serif text-center mb-2 text-text-primary">We Want Your Feedback!</h2>
@@ -33,15 +65,22 @@ export default function FeedbackForm() {
               Help us understand what products or services you&apos;d like to see at Nine Mile Feed & Hardware
             </p>
             
-            {/* Direct form submission to FormSubmit.co */}
-            <form action="https://formsubmit.co/adenjonah@gmail.com" method="POST">
+            {/* Hidden iframe for target */}
+            <iframe name="hidden-iframe" style={{display: 'none'}} ref={iframeRef}></iframe>
+            
+            {/* Form with iframe target */}
+            <form 
+              action="https://formsubmit.co/jaden8914@gmail.com" 
+              method="POST"
+              target="hidden-iframe"
+              onSubmit={handleSubmit}
+              ref={formRef}
+            >
               {/* FormSubmit configuration */}
-              <input type="hidden" name="_next" value="https://ninemilestore.com/?success=true" />
               <input type="hidden" name="_subject" value="New Feedback for Nine Mile Store" />
               <input type="hidden" name="_template" value="table" />
               <input type="text" name="_honey" style={{display: 'none'}} />
               <input type="hidden" name="_captcha" value="false" />
-              <input type="hidden" name="_debug" value="true" />
               
               <div className="mb-6">
                 <label className="block text-text-primary mb-2 font-medium" htmlFor="firstName">
