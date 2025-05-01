@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, Suspense, useRef } from 'react';
-import SuccessMessage from './SuccessMessage';
+import { useState, useRef, useEffect } from 'react';
 
 export default function FeedbackForm() {
   const [formValues, setFormValues] = useState({
@@ -11,9 +10,43 @@ export default function FeedbackForm() {
     feedback: ''
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
   const iframeRef = useRef(null);
   const formRef = useRef(null);
+
+  // Handle iframe load event to detect form submission completion
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+    
+    const handleLoad = () => {
+      // Only handle load events after form is submitted
+      if (formSubmitted) {
+        console.log('Form submission completed');
+        setIsSubmitting(false);
+        setIsSubmitted(true);
+        setFormSubmitted(false);
+        
+        // Reset form after successful submission
+        setFormValues({
+          firstName: '',
+          lastName: '',
+          mobile: '',
+          feedback: ''
+        });
+        
+        // Hide success message after 5 seconds
+        setTimeout(() => {
+          setIsSubmitted(false);
+        }, 5000);
+      }
+    };
+    
+    iframe.addEventListener('load', handleLoad);
+    return () => iframe.removeEventListener('load', handleLoad);
+  }, [formSubmitted]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,23 +58,17 @@ export default function FeedbackForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsSubmitted(true);
     
-    // Submit the form silently using the hidden iframe
+    if (!formValues.firstName || !formValues.feedback) {
+      alert('Please fill in all required fields');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    setFormSubmitted(true);
+    
+    // Submit the form to the iframe
     formRef.current.submit();
-    
-    // Reset form
-    setFormValues({
-      firstName: '',
-      lastName: '',
-      mobile: '',
-      feedback: ''
-    });
-    
-    // Hide success message after 5 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
-    }, 5000);
   };
 
   return (
@@ -143,9 +170,10 @@ export default function FeedbackForm() {
               <div className="text-center">
                 <button
                   type="submit"
-                  className="px-8 py-3 bg-primary hover:bg-primary-dark text-background-light rounded-sm font-medium"
+                  disabled={isSubmitting}
+                  className={`px-8 py-3 bg-primary hover:bg-primary-dark text-background-light rounded-sm font-medium ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
                 >
-                  Submit Feedback
+                  {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
                 </button>
               </div>
               
