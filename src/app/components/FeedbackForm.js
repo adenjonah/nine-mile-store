@@ -97,13 +97,14 @@ export default function FeedbackForm() {
             
             {/* Form with iframe target */}
             <form 
-              action="https://formsubmit.co/jeff@ninemilefeed.com" 
+              action="https://formsubmit.co/jaden8914@gmail.com" 
               method="POST"
               target="hidden-iframe"
               onSubmit={handleSubmit}
               ref={formRef}
             >
-              {/* FormSubmit configuratin */}
+              {/* FormSubmit configuration */}
+              <input type="hidden" name="_next" value="https://ninemilefeed.com/?success=true" />
               <input type="hidden" name="_subject" value="New Feedback for Nine Mile Store" />
               <input type="hidden" name="_template" value="table" />
               <input type="text" name="_honey" style={{display: 'none'}} />
