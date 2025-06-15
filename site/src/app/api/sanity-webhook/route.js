@@ -34,9 +34,18 @@ export async function POST(request) {
 
 // Helper function to validate the webhook signature
 async function validateRequest(request) {
-  // For now, we'll just trust the request
-  // In production, you should validate the Sanity webhook signature
   const body = await request.json();
+  
+  // Check for webhook secret in production
+  if (process.env.NODE_ENV === 'production' && process.env.SANITY_WEBHOOK_SECRET) {
+    const providedSecret = request.headers.get('x-sanity-webhook-secret');
+    if (!providedSecret || providedSecret !== process.env.SANITY_WEBHOOK_SECRET) {
+      return {
+        isValidSignature: false,
+        body
+      };
+    }
+  }
   
   return {
     isValidSignature: true,

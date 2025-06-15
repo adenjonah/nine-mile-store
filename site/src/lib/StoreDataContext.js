@@ -25,13 +25,9 @@ export function StoreDataProvider({ children }) {
     loading: true
   });
 
-  // Force update when component mounts and disable caching
-  const [forceUpdate, setForceUpdate] = useState(0);
-
   useEffect(() => {
     async function fetchAllData() {
       try {
-        // Use fresh query with cache disabled
         const query = `{
           "storeInfo": *[_type == "storeInfo"][0] {
             storeName,
@@ -96,14 +92,7 @@ export function StoreDataProvider({ children }) {
           }
         }`;
 
-        // Use no-cache to ensure fresh data
-        const data = await client.fetch(query, {}, {
-          cache: 'no-store',
-          next: { revalidate: 0 }
-        });
-
-        console.log('Fetched store hours (updated):', data.storeHours);
-        console.log('Store hours Monday:', data.storeHours?.monday);
+        const data = await client.fetch(query);
 
         // Process images by category
         const heroImage = data.images?.find(img => img.category === 'hero') || null;
@@ -150,15 +139,7 @@ export function StoreDataProvider({ children }) {
     }
 
     fetchAllData();
-
-    // Set up a revalidation interval (30 seconds)
-    const intervalId = setInterval(() => {
-      fetchAllData();
-      setForceUpdate(prev => prev + 1);
-    }, 30 * 1000);
-    
-    return () => clearInterval(intervalId);
-  }, [forceUpdate]);
+  }, []);
 
   return (
     <StoreDataContext.Provider value={storeData}>

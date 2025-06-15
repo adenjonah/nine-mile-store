@@ -79,7 +79,8 @@ export default function Navbar() {
           
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8">
-            <NavLink href="#home" label="Home" />
+            <NavLink href="/" label="Home" />
+            <NavLink href="/rentals" label="Rentals" />
             <NavLink href="#services" label="Services" />
             <NavLink href="#on-sale" label="On Sale" />
             <NavLink href="#about" label="About" />
@@ -94,7 +95,8 @@ export default function Navbar() {
           }`}
         >
           <div className="flex flex-col space-y-3 bg-white p-4 rounded-lg shadow-md">
-            <MobileNavLink href="#home" label="Home" onClick={() => setIsMenuOpen(false)} />
+            <MobileNavLink href="/" label="Home" onClick={() => setIsMenuOpen(false)} />
+            <MobileNavLink href="/rentals" label="Rentals" onClick={() => setIsMenuOpen(false)} />
             <MobileNavLink href="#services" label="Services" onClick={() => setIsMenuOpen(false)} />
             <MobileNavLink href="#on-sale" label="On Sale" onClick={() => setIsMenuOpen(false)} />
             <MobileNavLink href="#about" label="About" onClick={() => setIsMenuOpen(false)} />
