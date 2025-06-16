@@ -1,9 +1,9 @@
 import { client } from '@/lib/sanity'
 import { groq } from 'next-sanity'
 import Image from 'next/image'
-import { formatCurrency } from '../../lib/utils'
+import { formatCurrency } from '@/lib/utils'
 import { notFound } from 'next/navigation'
-import Navbar from '../../components/Navbar'
+import Navbar from '@/app/components/Navbar'
 
 const getRentalItem = groq`
   *[_type == "rentalItem" && slug.current == $slug][0] {
@@ -21,13 +21,14 @@ const getRentalItem = groq`
 `
 
 interface RentalItemPageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 export default async function RentalItemPage({ params }: RentalItemPageProps) {
-  const item = await client.fetch(getRentalItem, { slug: params.slug })
+  const { slug } = await params
+  const item = await client.fetch(getRentalItem, { slug })
 
   if (!item) {
     notFound()

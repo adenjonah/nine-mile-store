@@ -1,8 +1,8 @@
 import { client } from '@/lib/sanity'
 import { groq } from 'next-sanity'
-import RentalGrid from '../components/RentalGrid'
-import RentalFilters from '../components/RentalFilters'
-import Navbar from '../components/Navbar'
+import RentalGrid from '@/app/components/RentalGrid'
+import RentalFilters from '@/app/components/RentalFilters'
+import Navbar from '@/app/components/Navbar'
 
 const getRentalItems = groq`
   *[_type == "rentalItem"] {
