@@ -39,6 +39,9 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
     notFound()
   }
 
+  // Filter out any null/undefined URLs from additional images
+  const validAdditionalImages = item.additionalImageUrls?.filter(url => url && url.trim() !== '') || []
+
   return (
     <>
       <Navbar />
@@ -55,9 +58,9 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
               />
             </div>
             
-            {item.additionalImageUrls && item.additionalImageUrls.length > 0 && (
+            {validAdditionalImages.length > 0 && (
               <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50">
-                {item.additionalImageUrls.map((url, index) => (
+                {validAdditionalImages.map((url, index) => (
                   <div key={index} className="relative h-32">
                     <Image
                       src={url}
