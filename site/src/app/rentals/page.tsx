@@ -22,7 +22,18 @@ const getRentalItems = groq`
 `
 
 export default async function RentalsPage() {
-  const rentalItems = await client.fetch(getRentalItems)
+  let rentalItems = []
+  
+  try {
+    rentalItems = await client.fetch(getRentalItems)
+    // Ensure rentalItems is always an array
+    if (!Array.isArray(rentalItems)) {
+      rentalItems = []
+    }
+  } catch (error) {
+    console.error('Error fetching rental items:', error)
+    rentalItems = []
+  }
 
   return (
     <>
@@ -38,7 +49,13 @@ export default async function RentalsPage() {
           </div>
           
           <RentalFilters />
-          <RentalGrid items={rentalItems} />
+          {rentalItems.length > 0 ? (
+            <RentalGrid items={rentalItems} />
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">No rental items available at this time.</p>
+            </div>
+          )}
         </div>
       </main>
     </>

@@ -22,9 +22,18 @@ interface RentalGridProps {
 }
 
 export default function RentalGrid({ items }: RentalGridProps) {
+  // Ensure items is always an array
+  const safeItems = Array.isArray(items) ? items : []
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {items.map((item) => {
+      {safeItems.map((item) => {
+        // Validate required item properties
+        if (!item || !item._id || !item.name || !item.slug?.current) {
+          console.warn('Invalid rental item data:', item)
+          return null
+        }
+
         // Safely generate image URL with error handling
         let imageUrl = null
         try {
@@ -34,6 +43,10 @@ export default function RentalGrid({ items }: RentalGridProps) {
         } catch (error) {
           console.warn('Error generating image URL for rental item:', item.name, error)
         }
+
+        // Safely get rates with defaults
+        const dailyRate = typeof item.dailyRate === 'number' ? item.dailyRate : 0
+        const weeklyRate = typeof item.weeklyRate === 'number' ? item.weeklyRate : null
 
         return (
           <Link
@@ -46,7 +59,7 @@ export default function RentalGrid({ items }: RentalGridProps) {
                 {imageUrl ? (
                   <Image
                     src={imageUrl}
-                    alt={item.name}
+                    alt={item.name || 'Rental item'}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -62,34 +75,34 @@ export default function RentalGrid({ items }: RentalGridProps) {
                 <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-600 transition-colors">
                   {item.name}
                 </h3>
-                <p className="text-gray-600 line-clamp-2 mb-4">{item.description}</p>
+                <p className="text-gray-600 line-clamp-2 mb-4">{item.description || 'No description available.'}</p>
                 
                 <div className="flex justify-between items-end">
                   <div className="space-y-1">
                     <div className="flex items-center space-x-2">
                       <span className="text-lg font-bold text-blue-600">
-                        {formatCurrency(item.dailyRate)}
+                        {formatCurrency(dailyRate)}
                       </span>
                       <span className="text-sm text-gray-500">/day</span>
                     </div>
-                    {item.weeklyRate && (
+                    {weeklyRate && (
                       <div className="flex items-center space-x-2">
                         <span className="text-sm font-medium text-green-600">
-                          {formatCurrency(item.weeklyRate)}
+                          {formatCurrency(weeklyRate)}
                         </span>
                         <span className="text-xs text-gray-500">/week</span>
                       </div>
                     )}
                   </div>
                   <span className="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-medium text-gray-700">
-                    {item.category}
+                    {item.category || 'Uncategorized'}
                   </span>
                 </div>
               </div>
             </div>
           </Link>
         )
-      })}
+      }).filter(Boolean)} {/* Filter out any null items */}
     </div>
   )
 } 

@@ -34,15 +34,46 @@ interface RentalItemPageProps {
 
 export default async function RentalItemPage({ params }: RentalItemPageProps) {
   const { slug } = await params
-  const item = await client.fetch(getRentalItem, { slug })
+  
+  let item = null
+  try {
+    item = await client.fetch(getRentalItem, { slug })
+  } catch (error) {
+    console.error('Error fetching rental item:', error)
+    notFound()
+  }
 
   if (!item) {
     notFound()
   }
 
-  // Generate properly cropped image URLs using hotspot data
-  const mainImageUrl = item.mainImage ? urlForImage(item.mainImage).width(800).height(400).fit('crop').url() : null
-  const validAdditionalImages = item.additionalImages?.filter(img => img && img.asset) || []
+  // Generate properly cropped image URLs using hotspot data with error handling
+  let mainImageUrl = null
+  try {
+    if (item.mainImage && (item.mainImage.asset || item.mainImage._ref)) {
+      mainImageUrl = urlForImage(item.mainImage).width(800).height(400).fit('crop').url()
+    }
+  } catch (error) {
+    console.warn('Error generating main image URL:', error)
+  }
+
+  // Process additional images with error handling
+  let validAdditionalImages = []
+  try {
+    validAdditionalImages = item.additionalImages?.filter(img => {
+      try {
+        return img && (img.asset || img._ref)
+      } catch {
+        return false
+      }
+    }) || []
+  } catch (error) {
+    console.warn('Error processing additional images:', error)
+  }
+
+  // Safely get rates with defaults
+  const dailyRate = typeof item.dailyRate === 'number' ? item.dailyRate : 0
+  const weeklyRate = typeof item.weeklyRate === 'number' ? item.weeklyRate : null
 
   return (
     <>
@@ -54,7 +85,7 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
               <div className="relative h-96">
                 <Image
                   src={mainImageUrl}
-                  alt={item.name}
+                  alt={item.name || 'Rental item'}
                   fill
                   className="object-cover"
                   priority
@@ -64,21 +95,28 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
             
             {validAdditionalImages.length > 0 && (
               <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50">
-                {validAdditionalImages.map((img, index) => (
-                  <div key={index} className="relative h-32">
-                    <Image
-                      src={urlForImage(img).width(300).height(200).fit('crop').url()}
-                      alt={`${item.name} - Image ${index + 2}`}
-                      fill
-                      className="object-cover rounded-lg"
-                    />
-                  </div>
-                ))}
+                {validAdditionalImages.map((img, index) => {
+                  try {
+                    return (
+                      <div key={index} className="relative h-32">
+                        <Image
+                          src={urlForImage(img).width(300).height(200).fit('crop').url()}
+                          alt={`${item.name} - Image ${index + 2}`}
+                          fill
+                          className="object-cover rounded-lg"
+                        />
+                      </div>
+                    )
+                  } catch (error) {
+                    console.warn(`Error rendering additional image ${index}:`, error)
+                    return null
+                  }
+                })}
               </div>
             )}
 
             <div className="p-6">
-              <h1 className="text-3xl font-bold mb-6">{item.name}</h1>
+              <h1 className="text-3xl font-bold mb-6">{item.name || 'Rental Item'}</h1>
               
               {/* Pricing Section with Better Styling */}
               <div className="bg-gray-50 rounded-lg p-6 mb-6">
@@ -89,7 +127,7 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
                       <div>
                         <p className="text-sm font-medium text-gray-600 uppercase tracking-wide">Daily Rate</p>
                         <p className="text-2xl font-bold text-blue-600 mt-1">
-                          {formatCurrency(item.dailyRate)}
+                          {formatCurrency(dailyRate)}
                         </p>
                       </div>
                       <div className="bg-blue-100 rounded-full p-3">
@@ -100,17 +138,19 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
                     </div>
                   </div>
                   
-                  {item.weeklyRate && (
+                  {weeklyRate && (
                     <div className="bg-white border-2 border-green-200 rounded-lg p-4 shadow-sm">
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-sm font-medium text-gray-600 uppercase tracking-wide">Weekly Rate</p>
                           <p className="text-2xl font-bold text-green-600 mt-1">
-                            {formatCurrency(item.weeklyRate)}
+                            {formatCurrency(weeklyRate)}
                           </p>
-                          <p className="text-xs text-gray-500 mt-1">
-                            Save {formatCurrency((item.dailyRate * 7) - item.weeklyRate)}
-                          </p>
+                          {dailyRate > 0 && weeklyRate > 0 && (dailyRate * 7) > weeklyRate && (
+                            <p className="text-xs text-gray-500 mt-1">
+                              Save {formatCurrency((dailyRate * 7) - weeklyRate)}
+                            </p>
+                          )}
                         </div>
                         <div className="bg-green-100 rounded-full p-3">
                           <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,9 +165,9 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
               
               <div className="prose max-w-none">
                 <h2 className="text-xl font-semibold mb-2">Description</h2>
-                <p className="text-gray-600 mb-6">{item.description}</p>
+                <p className="text-gray-600 mb-6">{item.description || 'No description available.'}</p>
                 
-                {item.specifications && item.specifications.length > 0 && (
+                {item.specifications && Array.isArray(item.specifications) && item.specifications.length > 0 && (
                   <>
                     <h2 className="text-xl font-semibold mb-2">Specifications</h2>
                     <ul className="list-disc list-inside text-gray-600 mb-6">
@@ -141,7 +181,7 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
               
               <div className="mt-8">
                 <span className="inline-block bg-gray-100 rounded-full px-4 py-2 text-sm font-medium text-gray-700">
-                  Category: {item.category}
+                  Category: {item.category || 'Uncategorized'}
                 </span>
               </div>
             </div>
