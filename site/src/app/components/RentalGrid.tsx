@@ -42,19 +42,26 @@ export default function RentalGrid({ items }: RentalGridProps) {
               )}
             </div>
             <div className="p-4">
-              <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+              <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-600 transition-colors">
                 {item.name}
               </h3>
               <p className="text-gray-600 line-clamp-2 mb-4">{item.description}</p>
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="font-medium text-primary">
-                    {formatCurrency(item.dailyRate)}/day
-                  </p>
+              
+              <div className="flex justify-between items-end">
+                <div className="space-y-1">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-lg font-bold text-blue-600">
+                      {formatCurrency(item.dailyRate)}
+                    </span>
+                    <span className="text-sm text-gray-500">/day</span>
+                  </div>
                   {item.weeklyRate && (
-                    <p className="text-sm text-gray-500">
-                      {formatCurrency(item.weeklyRate)}/week
-                    </p>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm font-medium text-green-600">
+                        {formatCurrency(item.weeklyRate)}
+                      </span>
+                      <span className="text-xs text-gray-500">/week</span>
+                    </div>
                   )}
                 </div>
                 <span className="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-medium text-gray-700">
