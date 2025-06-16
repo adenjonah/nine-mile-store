@@ -15,7 +15,6 @@ const getRentalItem = groq`
     specifications,
     dailyRate,
     weeklyRate,
-    monthlyRate,
     category
   }
 `
@@ -79,14 +78,6 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
                     <p className="text-sm text-gray-600">Weekly Rate</p>
                     <p className="text-xl font-bold text-primary">
                       {formatCurrency(item.weeklyRate)}
-                    </p>
-                  </div>
-                )}
-                {item.monthlyRate && (
-                  <div className="bg-primary bg-opacity-10 rounded-lg p-4">
-                    <p className="text-sm text-gray-600">Monthly Rate</p>
-                    <p className="text-xl font-bold text-primary">
-                      {formatCurrency(item.monthlyRate)}
                     </p>
                   </div>
                 )}

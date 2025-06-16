@@ -58,12 +58,6 @@ export default {
       validation: Rule => Rule.min(0)
     },
     {
-      name: 'monthlyRate',
-      title: 'Monthly Rate',
-      type: 'number',
-      validation: Rule => Rule.min(0)
-    },
-    {
       name: 'category',
       title: 'Category',
       type: 'string',

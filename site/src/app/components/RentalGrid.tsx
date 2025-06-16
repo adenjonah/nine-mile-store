@@ -13,7 +13,6 @@ interface RentalItem {
   specifications: string[]
   dailyRate: number
   weeklyRate?: number
-  monthlyRate?: number
   category: string
 }
 

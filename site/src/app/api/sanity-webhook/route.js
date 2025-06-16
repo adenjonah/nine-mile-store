@@ -70,6 +70,13 @@ function getPathsToRevalidate(body) {
       case 'closeoutItem':
         paths.push('/#on-sale');
         break;
+      case 'rentalItem':
+        paths.push('/rentals');
+        // Also revalidate the specific rental item page if we have the slug
+        if (body.slug && body.slug.current) {
+          paths.push(`/rentals/${body.slug.current}`);
+        }
+        break;
       case 'storeHours':
       case 'storeInfo':
         paths.push('/#about');
