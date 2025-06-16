@@ -3,12 +3,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { formatCurrency } from '@/lib/utils'
+import { urlForImage } from '@/lib/sanity-image'
 
 interface RentalItem {
   _id: string
   name: string
   slug: { current: string }
-  imageUrl: string
+  mainImage: any
   description: string
   specifications: string[]
   dailyRate: number
@@ -31,12 +32,14 @@ export default function RentalGrid({ items }: RentalGridProps) {
         >
           <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
             <div className="relative h-48">
-              <Image
-                src={item.imageUrl}
-                alt={item.name}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-300"
-              />
+              {item.mainImage && (
+                <Image
+                  src={urlForImage(item.mainImage).width(400).height(300).fit('crop').url()}
+                  alt={item.name}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              )}
             </div>
             <div className="p-4">
               <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">

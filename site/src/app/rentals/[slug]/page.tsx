@@ -4,19 +4,14 @@ import Image from 'next/image'
 import { formatCurrency } from '@/lib/utils'
 import { notFound } from 'next/navigation'
 import Navbar from '@/app/components/Navbar'
+import { urlForImage } from '@/lib/sanity-image'
 
 const getRentalItem = groq`
   *[_type == "rentalItem" && slug.current == $slug][0] {
     _id,
     name,
-    "imageUrl": coalesce(
-      image.asset->url,
-      image.image.asset->url
-    ),
-    "additionalImageUrls": coalesce(
-      additionalImages[].asset->url,
-      additionalImages[].image.asset->url
-    ),
+    "mainImage": coalesce(image, image),
+    "additionalImages": coalesce(additionalImages, additionalImages),
     description,
     specifications,
     dailyRate,
@@ -39,8 +34,9 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
     notFound()
   }
 
-  // Filter out any null/undefined URLs from additional images
-  const validAdditionalImages = item.additionalImageUrls?.filter(url => url && url.trim() !== '') || []
+  // Generate properly cropped image URLs using hotspot data
+  const mainImageUrl = item.mainImage ? urlForImage(item.mainImage).width(800).height(400).fit('crop').url() : null
+  const validAdditionalImages = item.additionalImages?.filter(img => img && img.asset) || []
 
   return (
     <>
@@ -48,22 +44,24 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
       <main className="container mx-auto px-4 py-8 mt-20">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <div className="relative h-96">
-              <Image
-                src={item.imageUrl}
-                alt={item.name}
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
+            {mainImageUrl && (
+              <div className="relative h-96">
+                <Image
+                  src={mainImageUrl}
+                  alt={item.name}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            )}
             
             {validAdditionalImages.length > 0 && (
               <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50">
-                {validAdditionalImages.map((url, index) => (
+                {validAdditionalImages.map((img, index) => (
                   <div key={index} className="relative h-32">
                     <Image
-                      src={url}
+                      src={urlForImage(img).width(300).height(200).fit('crop').url()}
                       alt={`${item.name} - Image ${index + 2}`}
                       fill
                       className="object-cover rounded-lg"
