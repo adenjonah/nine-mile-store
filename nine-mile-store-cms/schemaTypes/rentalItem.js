@@ -22,14 +22,22 @@ export default {
     {
       name: 'image',
       title: 'Main Image',
-      type: 'siteImage',
+      type: 'image',
+      options: {
+        hotspot: true
+      },
       validation: Rule => Rule.required()
     },
     {
       name: 'additionalImages',
       title: 'Additional Images',
       type: 'array',
-      of: [{ type: 'siteImage' }],
+      of: [{ 
+        type: 'image',
+        options: {
+          hotspot: true
+        }
+      }],
       description: 'Add more images of the rental item (optional)'
     },
     {
