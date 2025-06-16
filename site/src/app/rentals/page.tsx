@@ -4,17 +4,13 @@ import RentalGrid from '@/app/components/RentalGrid'
 import RentalFilters from '@/app/components/RentalFilters'
 import Navbar from '@/app/components/Navbar'
 
-const getRentalItems = groq`
+const query = groq`
   *[_type == "rentalItem"] {
     _id,
     name,
     slug,
-    "mainImage": coalesce(
-      image,
-      image.image
-    ),
+    "mainImage": image.image,
     description,
-    specifications,
     dailyRate,
     weeklyRate,
     category
@@ -25,7 +21,7 @@ export default async function RentalsPage() {
   let rentalItems = []
   
   try {
-    rentalItems = await client.fetch(getRentalItems)
+    rentalItems = await client.fetch(query)
     // Ensure rentalItems is always an array
     if (!Array.isArray(rentalItems)) {
       rentalItems = []

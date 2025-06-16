@@ -10,14 +10,8 @@ const getRentalItem = groq`
   *[_type == "rentalItem" && slug.current == $slug][0] {
     _id,
     name,
-    "mainImage": coalesce(
-      image,
-      image.image
-    ),
-    "additionalImages": coalesce(
-      additionalImages,
-      additionalImages[].image
-    ),
+    "mainImage": image.image,
+    "additionalImages": additionalImages[].image,
     description,
     specifications,
     dailyRate,
@@ -50,7 +44,7 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
   // Generate properly cropped image URLs using hotspot data with error handling
   let mainImageUrl = null
   try {
-    if (item.mainImage) {
+    if (item.mainImage && item.mainImage.asset) {
       mainImageUrl = urlForImage(item.mainImage).width(800).height(400).fit('crop').url()
     }
   } catch (error) {
