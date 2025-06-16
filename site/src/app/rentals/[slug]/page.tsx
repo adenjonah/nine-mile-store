@@ -9,8 +9,14 @@ const getRentalItem = groq`
   *[_type == "rentalItem" && slug.current == $slug][0] {
     _id,
     name,
-    "imageUrl": image.asset->url,
-    "additionalImageUrls": additionalImages[].asset->url,
+    "imageUrl": coalesce(
+      image.asset->url,
+      image.image.asset->url
+    ),
+    "additionalImageUrls": coalesce(
+      additionalImages[].asset->url,
+      additionalImages[].image.asset->url
+    ),
     description,
     specifications,
     dailyRate,

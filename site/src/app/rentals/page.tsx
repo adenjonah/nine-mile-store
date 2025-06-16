@@ -9,7 +9,10 @@ const getRentalItems = groq`
     _id,
     name,
     slug,
-    "imageUrl": image.asset->url,
+    "imageUrl": coalesce(
+      image.asset->url,
+      image.image.asset->url
+    ),
     description,
     specifications,
     dailyRate,
