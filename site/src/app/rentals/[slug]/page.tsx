@@ -50,7 +50,7 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
   // Generate properly cropped image URLs using hotspot data with error handling
   let mainImageUrl = null
   try {
-    if (item.mainImage && (item.mainImage.asset || item.mainImage._ref)) {
+    if (item.mainImage) {
       mainImageUrl = urlForImage(item.mainImage).width(800).height(400).fit('crop').url()
     }
   } catch (error) {
@@ -62,7 +62,7 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
   try {
     validAdditionalImages = item.additionalImages?.filter(img => {
       try {
-        return img && (img.asset || img._ref)
+        return img && img.asset
       } catch {
         return false
       }
@@ -118,20 +118,20 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
             <div className="p-6">
               <h1 className="text-3xl font-bold mb-6">{item.name || 'Rental Item'}</h1>
               
-              {/* Pricing Section with Better Styling */}
-              <div className="bg-gray-50 rounded-lg p-6 mb-6">
+              {/* Pricing Section with Site Colors */}
+              <div className="bg-background-alternate rounded-lg p-6 mb-6">
                 <h2 className="text-xl font-semibold mb-4 text-gray-800">Rental Rates</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-white border-2 border-blue-200 rounded-lg p-4 shadow-sm">
+                  <div className="bg-white border-2 border-primary border-opacity-30 rounded-lg p-4 shadow-sm">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium text-gray-600 uppercase tracking-wide">Daily Rate</p>
-                        <p className="text-2xl font-bold text-blue-600 mt-1">
+                        <p className="text-2xl font-bold text-primary mt-1">
                           {formatCurrency(dailyRate)}
                         </p>
                       </div>
-                      <div className="bg-blue-100 rounded-full p-3">
-                        <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="bg-primary bg-opacity-10 rounded-full p-3">
+                        <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
@@ -139,11 +139,11 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
                   </div>
                   
                   {weeklyRate && (
-                    <div className="bg-white border-2 border-green-200 rounded-lg p-4 shadow-sm">
+                    <div className="bg-white border-2 border-secondary border-opacity-30 rounded-lg p-4 shadow-sm">
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-sm font-medium text-gray-600 uppercase tracking-wide">Weekly Rate</p>
-                          <p className="text-2xl font-bold text-green-600 mt-1">
+                          <p className="text-2xl font-bold text-secondary mt-1">
                             {formatCurrency(weeklyRate)}
                           </p>
                           {dailyRate > 0 && weeklyRate > 0 && (dailyRate * 7) > weeklyRate && (
@@ -152,8 +152,8 @@ export default async function RentalItemPage({ params }: RentalItemPageProps) {
                             </p>
                           )}
                         </div>
-                        <div className="bg-green-100 rounded-full p-3">
-                          <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="bg-secondary bg-opacity-10 rounded-full p-3">
+                          <svg className="w-6 h-6 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2z" />
                           </svg>
                         </div>
