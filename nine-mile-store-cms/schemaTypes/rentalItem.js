@@ -32,12 +32,17 @@ export default {
       name: 'additionalImages',
       title: 'Additional Images',
       type: 'array',
-      of: [{ 
-        type: 'image',
-        options: {
-          hotspot: true
+      of: [
+        { 
+          type: 'image',
+          options: {
+            hotspot: true
+          }
+        },
+        {
+          type: 'siteImage'
         }
-      }],
+      ],
       description: 'Add more images of the rental item (optional)'
     },
     {
